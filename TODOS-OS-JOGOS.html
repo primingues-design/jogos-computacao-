@@ -1,0 +1,5224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Jogos de Pensamento Computacional</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Nunito',sans-serif;
+  background:#0d1b2a;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  color:#fff;
+}
+
+/* ── BARRA LATERAL ── */
+.layout {
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+}
+
+.sidebar {
+  width:220px;
+  flex-shrink:0;
+  background:#111f30;
+  border-right:1px solid rgba(255,255,255,.07);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  z-index:10;
+}
+
+.sidebar-header {
+  padding:22px 16px 14px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  text-align:center;
+}
+
+.logo-emoji {
+  font-size:36px;
+  display:block;
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.logo-title {
+  font-family:'Fredoka One',cursive;
+  font-size:1rem;
+  color:#fff;
+  line-height:1.2;
+  margin-top:6px;
+}
+
+.logo-sub {
+  font-size:.68rem;
+  color:rgba(255,255,255,.35);
+  font-weight:700;
+  margin-top:3px;
+}
+
+.tabs-list {
+  padding:12px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  flex:1;
+}
+
+.tab-btn {
+  background:rgba(255,255,255,.04);
+  border:2px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  padding:14px 12px;
+  cursor:pointer;
+  text-align:left;
+  transition:all .25s;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.tab-btn::before {
+  content:'';
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:3px;
+  background:var(--cor);
+  border-radius:0 3px 3px 0;
+  opacity:0;
+  transition:opacity .2s;
+}
+
+.tab-btn.active {
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.18);
+}
+
+.tab-btn.active::before { opacity:1; }
+
+.tab-btn:hover:not(.active) {
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.14);
+  transform:translateX(3px);
+}
+
+.tab-emoji { font-size:1.5rem; }
+.tab-badge { font-size:.65rem; font-weight:800; letter-spacing:.8px; text-transform:uppercase; }
+.tab-nome { font-family:'Fredoka One',cursive; font-size:.95rem; color:#fff; }
+.tab-desc { font-size:.7rem; color:rgba(255,255,255,.35); font-weight:700; }
+
+.sidebar-footer {
+  padding:14px 12px;
+  border-top:1px solid rgba(255,255,255,.06);
+  font-size:.65rem;
+  color:rgba(255,255,255,.2);
+  text-align:center;
+  line-height:1.5;
+}
+
+/* ── ÁREA DO JOGO ── */
+.game-area {
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+
+.game-panel {
+  position:absolute;
+  inset:0;
+}
+
+/* ── MOBILE: barra inferior ── */
+@media(max-width:600px) {
+  .layout { flex-direction:column; }
+  
+  .sidebar {
+    width:100%;
+    height:auto;
+    border-right:none;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    flex-direction:column;
+  }
+  
+  .sidebar-header { display:none; }
+  
+  .tabs-list {
+    flex-direction:row;
+    padding:8px;
+    gap:6px;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+  }
+  
+  .tab-btn {
+    flex-direction:row;
+    align-items:center;
+    gap:8px;
+    min-width:140px;
+    padding:10px 12px;
+    flex-shrink:0;
+  }
+  
+  .tab-btn::before {
+    width:auto; height:3px;
+    left:0; right:0; top:0; bottom:auto;
+    border-radius:0 0 3px 3px;
+  }
+  
+  .tab-desc { display:none; }
+  .tab-badge { display:none; }
+  
+  .sidebar-footer { display:none; }
+  
+  .game-area { flex:1; min-height:0; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo-emoji">🧠</span>
+      <div class="logo-title">Pensamento<br>Computacional</div>
+      <div class="logo-sub">BNCC • Offline • PT-BR</div>
+    </div>
+    <div class="tabs-list">
+      
+    <button class="tab-btn active" onclick="abrirJogo('jogo1')" id="tab-jogo1" style="--cor:#2ECC71">
+      <span class="tab-emoji">☕</span>
+      <span class="tab-badge" style="color:#2ECC71">Jogo 1</span>
+      <span class="tab-nome">Fazendo o Café</span>
+      <span class="tab-desc">Sequência Lógica</span>
+    </button>
+    <button class="tab-btn " onclick="abrirJogo('jogo2')" id="tab-jogo2" style="--cor:#FF6B35">
+      <span class="tab-emoji">🐛</span>
+      <span class="tab-badge" style="color:#FF6B35">Jogo 2</span>
+      <span class="tab-nome">Encontre o Bug!</span>
+      <span class="tab-desc">Depuração</span>
+    </button>
+    <button class="tab-btn " onclick="abrirJogo('jogo3')" id="tab-jogo3" style="--cor:#3498DB">
+      <span class="tab-emoji">🤖</span>
+      <span class="tab-badge" style="color:#3498DB">Jogo 3</span>
+      <span class="tab-nome">Programando o Robô</span>
+      <span class="tab-desc">Algoritmo</span>
+    </button>
+    <button class="tab-btn " onclick="abrirJogo('jogo4')" id="tab-jogo4" style="--cor:#25D366">
+      <span class="tab-emoji">📱</span>
+      <span class="tab-badge" style="color:#25D366">Jogo 4</span>
+      <span class="tab-nome">Sequência WhatsApp</span>
+      <span class="tab-desc">Lógica + Cronômetro</span>
+    </button>
+    </div>
+    <div class="sidebar-footer">
+      4 jogos interativos<br>
+      Funciona 100% offline
+    </div>
+  </div>
+
+  <!-- Game area -->
+  <div class="game-area">
+    
+    <div class="game-panel" id="panel-jogo1" style="display:block">
+      <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap');
+
+  :root {
+    --verde: #2ECC71;
+    --verde-dark: #27AE60;
+    --bg: #0d1b2a;
+    --card: #1b2c3e;
+    --card2: #243447;
+    --amarelo: #F39C12;
+    --vermelho: #E74C3C;
+    --texto: #fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--texto);
+  }
+
+  
+
+  .topo {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 28px 20px 16px;
+  }
+
+  .voltar {
+    position: absolute;
+    left: 20px;
+    top: 28px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    padding: 8px 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .voltar:hover { background: rgba(255,255,255,0.2); }
+
+  .titulo-jogo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--verde);
+    text-shadow: 0 0 30px rgba(46,204,113,0.4);
+  }
+
+  .subtitulo {
+    color: rgba(255,255,255,0.55);
+    font-size: 1rem;
+    margin-top: 4px;
+  }
+
+  .jogo-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+  }
+
+  .instrucao {
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    text-align: center;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+  }
+
+  .instrucao span { color: var(--verde); }
+
+  /* Layout das duas colunas */
+  .colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 540px) {
+    .colunas { grid-template-columns: 1fr; }
+  }
+
+  .coluna-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  .zona {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 16px;
+    min-height: 340px;
+    border: 2px dashed rgba(255,255,255,0.1);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .zona.drag-over {
+    border-color: var(--verde);
+    background: rgba(46,204,113,0.08);
+  }
+
+  .zona-resposta {
+    border: 2px dashed rgba(46,204,113,0.3);
+    background: rgba(46,204,113,0.05);
+  }
+
+  .zona-resposta.drag-over {
+    border-color: var(--verde);
+    background: rgba(46,204,113,0.12);
+  }
+
+  /* Cartão de etapa */
+  .etapa {
+    background: var(--card2);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: grab;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+
+  .etapa:active { cursor: grabbing; }
+
+  .etapa.dragging {
+    opacity: 0.4;
+    transform: rotate(2deg) scale(0.98);
+  }
+
+  .etapa:hover {
+    border-color: rgba(46,204,113,0.5);
+    background: rgba(46,204,113,0.08);
+    transform: translateX(4px);
+  }
+
+  .etapa-num {
+    width: 34px;
+    height: 34px;
+    background: var(--verde);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    flex-shrink: 0;
+    color: #fff;
+  }
+
+  .etapa-num.pendente { background: rgba(255,255,255,0.15); }
+
+  .etapa-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+  .etapa-texto {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  /* Slot numerado na zona de resposta */
+  .slot {
+    background: rgba(255,255,255,0.04);
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .slot.preenchido {
+    border-style: solid;
+    border-color: rgba(46,204,113,0.4);
+    background: rgba(46,204,113,0.06);
+  }
+
+  .slot.correto {
+    border-color: var(--verde);
+    background: rgba(46,204,113,0.15);
+    animation: pulseVerde 0.5s ease;
+  }
+
+  .slot.errado {
+    border-color: var(--vermelho);
+    background: rgba(231,76,60,0.1);
+    animation: shake 0.4s ease;
+  }
+
+  .slot-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.2);
+    min-width: 28px;
+  }
+
+  .slot-placeholder {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  @keyframes pulseVerde {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* Botões */
+  .btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .btn {
+    padding: 14px 32px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-verificar {
+    background: var(--verde);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(46,204,113,0.4);
+  }
+
+  .btn-verificar:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+  .btn-reiniciar {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .btn-reiniciar:hover { background: rgba(255,255,255,0.2); }
+
+  .btn-dica {
+    background: rgba(243,156,18,0.15);
+    color: var(--amarelo);
+    border: 1px solid rgba(243,156,18,0.3);
+  }
+
+  .btn-dica:hover { background: rgba(243,156,18,0.25); }
+
+  /* Painel de resultado */
+  .resultado {
+    display: none;
+    text-align: center;
+    padding: 32px;
+    background: var(--card);
+    border-radius: 24px;
+    border: 2px solid var(--verde);
+    box-shadow: 0 0 40px rgba(46,204,113,0.2);
+    animation: aparecer 0.5s ease;
+    margin-top: 20px;
+  }
+
+  @keyframes aparecer {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .resultado .emoji-vitoria { font-size: 72px; display: block; margin-bottom: 12px; }
+  .resultado h2 { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--verde); margin-bottom: 8px; }
+  .resultado p { color: rgba(255,255,255,0.7); font-size: 1rem; }
+
+  /* Feedback flutuante */
+  .feedback {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: var(--verde);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    z-index: 1000;
+    pointer-events: none;
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .feedback.show {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+
+  /* Progresso */
+  .progresso-barra {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    height: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .progresso-fill {
+    height: 100%;
+    background: var(--verde);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progresso-texto {
+    text-align: right;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+  }
+
+</style>
+</head>
+<body>
+<div class=&quot;topo&quot;>
+  
+  <div class=&quot;titulo-jogo&quot;>☕ Fazendo o Café</div>
+  <p class=&quot;subtitulo&quot;>Aprenda sequência lógica de um jeito delicioso!</p>
+</div>
+
+<div class=&quot;jogo-wrapper&quot;>
+  <div class=&quot;instrucao&quot;>
+    <span>👆 Arraste</span> cada etapa da coluna da esquerda para a posição correta na coluna da direita!
+  </div>
+
+  <div class=&quot;progresso-barra&quot;><div class=&quot;progresso-fill&quot; id=&quot;progressoFill&quot;></div></div>
+  <div class=&quot;progresso-texto&quot; id=&quot;progressoTexto&quot;>0 de 6 etapas colocadas</div>
+
+  <div class=&quot;colunas&quot;>
+    <!-- Etapas embaralhadas -->
+    <div>
+      <div class=&quot;coluna-titulo&quot;>📋 Etapas (embaralhadas)</div>
+      <div class=&quot;zona&quot; id=&quot;zonaOrigem&quot; ondragover=&quot;dragOver(event)&quot; ondrop=&quot;drop(event, 'origem')&quot; ondragleave=&quot;dragLeave(event)&quot;>
+      </div>
+    </div>
+
+    <!-- Slots para ordenar -->
+    <div>
+      <div class=&quot;coluna-titulo&quot;>✅ Ordem correta</div>
+      <div class=&quot;zona zona-resposta&quot; id=&quot;zonaResposta&quot; ondragover=&quot;dragOver(event)&quot; ondrop=&quot;drop(event, 'resposta')&quot; ondragleave=&quot;dragLeave(event)&quot;>
+        <div class=&quot;slot&quot; id=&quot;slot-0&quot; data-pos=&quot;0&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 0)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>1.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 1ª etapa...</span>
+        </div>
+        <div class=&quot;slot&quot; id=&quot;slot-1&quot; data-pos=&quot;1&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 1)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>2.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 2ª etapa...</span>
+        </div>
+        <div class=&quot;slot&quot; id=&quot;slot-2&quot; data-pos=&quot;2&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 2)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>3.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 3ª etapa...</span>
+        </div>
+        <div class=&quot;slot&quot; id=&quot;slot-3&quot; data-pos=&quot;3&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 3)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>4.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 4ª etapa...</span>
+        </div>
+        <div class=&quot;slot&quot; id=&quot;slot-4&quot; data-pos=&quot;4&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 4)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>5.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 5ª etapa...</span>
+        </div>
+        <div class=&quot;slot&quot; id=&quot;slot-5&quot; data-pos=&quot;5&quot; ondragover=&quot;dragOver(event, true)&quot; ondrop=&quot;dropSlot(event, 5)&quot; ondragleave=&quot;dragLeave(event)&quot;>
+          <span class=&quot;slot-label&quot;>6.</span>
+          <span class=&quot;slot-placeholder&quot;>Solte aqui a 6ª etapa...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class=&quot;btns&quot;>
+    <button class=&quot;btn btn-dica&quot; onclick=&quot;mostrarDica()&quot;>💡 Dica</button>
+    <button class=&quot;btn btn-verificar&quot; onclick=&quot;verificar()&quot;>✔ Verificar</button>
+    <button class=&quot;btn btn-reiniciar&quot; onclick=&quot;reiniciar()&quot;>🔄 Reiniciar</button>
+  </div>
+
+  <div class=&quot;resultado&quot; id=&quot;resultado&quot;>
+    <span class=&quot;emoji-vitoria&quot;>🎉</span>
+    <h2>Muito bem! Perfeito!</h2>
+    <p>Você ordenou todas as etapas corretamente!<br>Agora você sabe fazer o café na ordem certa! ☕</p>
+  </div>
+</div>
+
+<div class=&quot;feedback&quot; id=&quot;feedback&quot;></div>
+
+<script>
+  // Sequência correta (ordem do índice = posição certa)
+  const etapasCorretas = [
+    { id: 0, icon: '🫙', texto: 'Separar o pó de café, o coador e a água', cor: '#2ECC71' },
+    { id: 1, icon: '🔥', texto: 'Ferver a água na chaleira', cor: '#E67E22' },
+    { id: 2, icon: '🫗', texto: 'Colocar o pó no coador sobre o copo', cor: '#8E44AD' },
+    { id: 3, icon: '💧', texto: 'Passar a água quente pelo coador', cor: '#3498DB' },
+    { id: 4, icon: '🍬', texto: 'Adoçar a gosto (açúcar ou adoçante)', cor: '#F39C12' },
+    { id: 5, icon: '😋', texto: 'Servir e tomar o café!', cor: '#27AE60' },
+  ];
+
+  let etapasEmbaralhadas = [];
+  let slotContents = [null, null, null, null, null, null]; // o que está em cada slot
+  let draggedId = null;
+  let dragSource = null; // 'origem' ou 'slot-N'
+
+  function embaralhar(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function criarCartao(etapa) {
+    const div = document.createElement('div');
+    div.className = 'etapa';
+    div.id = 'etapa-' + etapa.id;
+    div.draggable = true;
+    div.innerHTML = `
+      <span class=&quot;etapa-num pendente&quot; style=&quot;background:${etapa.cor}30;color:${etapa.cor}&quot;>?</span>
+      <span class=&quot;etapa-icon&quot;>${etapa.icon}</span>
+      <span class=&quot;etapa-texto&quot;>${etapa.texto}</span>
+    `;
+    div.addEventListener('dragstart', (e) => {
+      draggedId = etapa.id;
+      dragSource = 'origem';
+      setTimeout(() => div.classList.add('dragging'), 0);
+    });
+    div.addEventListener('dragend', () => {
+      div.classList.remove('dragging');
+    });
+    return div;
+  }
+
+  function inicializar() {
+    etapasEmbaralhadas = embaralhar(etapasCorretas);
+    slotContents = [null, null, null, null, null, null];
+    const zonaOrigem = document.getElementById('zonaOrigem');
+    zonaOrigem.innerHTML = '';
+    etapasEmbaralhadas.forEach(e => {
+      zonaOrigem.appendChild(criarCartao(e));
+    });
+    // Limpar slots
+    for (let i = 0; i < 6; i++) {
+      limparSlot(i);
+    }
+    document.getElementById('resultado').style.display = 'none';
+    atualizarProgresso();
+  }
+
+  function limparSlot(pos) {
+    const slot = document.getElementById('slot-' + pos);
+    slot.className = 'slot';
+    slot.innerHTML = `
+      <span class=&quot;slot-label&quot;>${pos + 1}.</span>
+      <span class=&quot;slot-placeholder&quot;>Solte aqui a ${pos + 1}ª etapa...</span>
+    `;
+    slot.ondragover = (e) => dragOver(e, true);
+    slot.ondrop = (e) => dropSlot(e, pos);
+    slot.ondragleave = dragLeave;
+  }
+
+  function preencherSlot(pos, etapaId) {
+    const etapa = etapasCorretas.find(e => e.id === etapaId);
+    const slot = document.getElementById('slot-' + pos);
+    slot.className = 'slot preenchido';
+    slot.innerHTML = `
+      <span class=&quot;slot-label&quot;>${pos + 1}.</span>
+      <span class=&quot;etapa-icon&quot;>${etapa.icon}</span>
+      <span class=&quot;etapa-texto&quot; style=&quot;font-weight:700;font-size:0.95rem&quot;>${etapa.texto}</span>
+    `;
+    slot.ondragstart = (e) => {
+      draggedId = etapaId;
+      dragSource = 'slot-' + pos;
+    };
+    slot.draggable = true;
+    slot.ondragover = (e) => dragOver(e, true);
+    slot.ondrop = (e) => dropSlot(e, pos);
+    slot.ondragleave = dragLeave;
+    slotContents[pos] = etapaId;
+    atualizarProgresso();
+  }
+
+  function dragOver(e, isSlot = false) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function dragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function drop(e, zona) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (zona === 'origem' &amp;&amp; draggedId !== null) {
+      // Devolver para a origem
+      if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+        const pos = parseInt(dragSource.split('-')[1]);
+        slotContents[pos] = null;
+        limparSlot(pos);
+      }
+      // Verificar se já está na origem
+      if (!document.getElementById('etapa-' + draggedId)) {
+        const etapa = etapasCorretas.find(e => e.id === draggedId);
+        document.getElementById('zonaOrigem').appendChild(criarCartao(etapa));
+      }
+      draggedId = null;
+      dragSource = null;
+      atualizarProgresso();
+    }
+  }
+
+  function dropSlot(e, pos) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+
+    if (draggedId === null) return;
+
+    // Se o slot já tem algo, trocar
+    const anteriorNeste = slotContents[pos];
+
+    if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const sourcePos = parseInt(dragSource.split('-')[1]);
+      if (anteriorNeste !== null) {
+        // Trocar
+        slotContents[sourcePos] = anteriorNeste;
+        preencherSlot(sourcePos, anteriorNeste);
+      } else {
+        slotContents[sourcePos] = null;
+        limparSlot(sourcePos);
+      }
+    } else {
+      // Vem da origem - remover da origem
+      const el = document.getElementById('etapa-' + draggedId);
+      if (el) el.remove();
+      // Se slot tinha algo, devolver à origem
+      if (anteriorNeste !== null) {
+        const etapaAnterior = etapasCorretas.find(e => e.id === anteriorNeste);
+        document.getElementById('zonaOrigem').appendChild(criarCartao(etapaAnterior));
+      }
+    }
+
+    preencherSlot(pos, draggedId);
+    draggedId = null;
+    dragSource = null;
+    atualizarProgresso();
+  }
+
+  function atualizarProgresso() {
+    const preenchidos = slotContents.filter(s => s !== null).length;
+    const pct = (preenchidos / 6) * 100;
+    document.getElementById('progressoFill').style.width = pct + '%';
+    document.getElementById('progressoTexto').textContent = `${preenchidos} de 6 etapas colocadas`;
+  }
+
+  function verificar() {
+    let acertos = 0;
+    let tudo = true;
+
+    for (let i = 0; i < 6; i++) {
+      const slot = document.getElementById('slot-' + i);
+      if (slotContents[i] === null) {
+        tudo = false;
+        continue;
+      }
+      if (slotContents[i] === i) {
+        acertos++;
+        slot.classList.remove('errado');
+        slot.classList.add('correto');
+      } else {
+        tudo = false;
+        slot.classList.remove('correto');
+        slot.classList.add('errado');
+      }
+    }
+
+    if (!tudo &amp;&amp; slotContents.some(s => s === null)) {
+      mostrarFeedback('⚠️ Coloque todas as etapas primeiro!', '#E67E22');
+      return;
+    }
+
+    if (acertos === 6) {
+      tocarSomAcerto();
+      mostrarFeedback('🎉 Perfeito!', '#2ECC71');
+      setTimeout(() => {
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    } else {
+      tocarSomErro();
+      mostrarFeedback(`🤔 ${acertos} de 6 corretos. Tente de novo!`, '#E74C3C');
+    }
+  }
+
+  function mostrarDica() {
+    const dicas = [
+      'Primeiro você precisa ter tudo separado!',
+      'A água precisa estar quente antes de usar.',
+      'O pó fica no coador para filtrar.',
+      'Depois que a água passa, o café está pronto.',
+      'O adoçante vai depois do café estar pronto.',
+      'Aí sim, hora de servir! 😋'
+    ];
+    // Encontrar primeira posição errada
+    for (let i = 0; i < 6; i++) {
+      if (slotContents[i] !== i) {
+        mostrarFeedback('💡 ' + dicas[i], '#F39C12');
+        return;
+      }
+    }
+    mostrarFeedback('✅ Tudo certo! Clique em Verificar!', '#2ECC71');
+  }
+
+  function mostrarFeedback(msg, cor) {
+    const fb = document.getElementById('feedback');
+    fb.textContent = msg;
+    fb.style.background = cor;
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2500);
+  }
+
+  function tocarSomAcerto() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notas = [523, 659, 784, 1046]; // C5 E5 G5 C6
+      notas.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+      });
+    } catch(e) {}
+  }
+
+  function tocarSomErro() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 200;
+      osc.type = 'sawtooth';
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    } catch(e) {}
+  }
+
+  function reiniciar() {
+    inicializar();
+    mostrarFeedback('🔄 Jogo reiniciado!', '#3498DB');
+  }
+
+  // Touch support
+  let touchEl = null;
+  let touchClone = null;
+
+  document.addEventListener('touchstart', (e) => {
+    const el = e.target.closest('.etapa, .slot.preenchido');
+    if (!el) return;
+    touchEl = el;
+  }, { passive: true });
+
+  inicializar();
+</script>
+<script>
+
+  // Sequência correta (ordem do índice = posição certa)
+  const etapasCorretas = [
+    { id: 0, icon: '🫙', texto: 'Separar o pó de café, o coador e a água', cor: '#2ECC71' },
+    { id: 1, icon: '🔥', texto: 'Ferver a água na chaleira', cor: '#E67E22' },
+    { id: 2, icon: '🫗', texto: 'Colocar o pó no coador sobre o copo', cor: '#8E44AD' },
+    { id: 3, icon: '💧', texto: 'Passar a água quente pelo coador', cor: '#3498DB' },
+    { id: 4, icon: '🍬', texto: 'Adoçar a gosto (açúcar ou adoçante)', cor: '#F39C12' },
+    { id: 5, icon: '😋', texto: 'Servir e tomar o café!', cor: '#27AE60' },
+  ];
+
+  let etapasEmbaralhadas = [];
+  let slotContents = [null, null, null, null, null, null]; // o que está em cada slot
+  let draggedId = null;
+  let dragSource = null; // 'origem' ou 'slot-N'
+
+  function embaralhar(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function criarCartao(etapa) {
+    const div = document.createElement('div');
+    div.className = 'etapa';
+    div.id = 'etapa-' + etapa.id;
+    div.draggable = true;
+    div.innerHTML = `
+      <span class=&quot;etapa-num pendente&quot; style=&quot;background:${etapa.cor}30;color:${etapa.cor}&quot;>?</span>
+      <span class=&quot;etapa-icon&quot;>${etapa.icon}</span>
+      <span class=&quot;etapa-texto&quot;>${etapa.texto}</span>
+    `;
+    div.addEventListener('dragstart', (e) => {
+      draggedId = etapa.id;
+      dragSource = 'origem';
+      setTimeout(() => div.classList.add('dragging'), 0);
+    });
+    div.addEventListener('dragend', () => {
+      div.classList.remove('dragging');
+    });
+    return div;
+  }
+
+  function inicializar() {
+    etapasEmbaralhadas = embaralhar(etapasCorretas);
+    slotContents = [null, null, null, null, null, null];
+    const zonaOrigem = document.getElementById('zonaOrigem');
+    zonaOrigem.innerHTML = '';
+    etapasEmbaralhadas.forEach(e => {
+      zonaOrigem.appendChild(criarCartao(e));
+    });
+    // Limpar slots
+    for (let i = 0; i < 6; i++) {
+      limparSlot(i);
+    }
+    document.getElementById('resultado').style.display = 'none';
+    atualizarProgresso();
+  }
+
+  function limparSlot(pos) {
+    const slot = document.getElementById('slot-' + pos);
+    slot.className = 'slot';
+    slot.innerHTML = `
+      <span class=&quot;slot-label&quot;>${pos + 1}.</span>
+      <span class=&quot;slot-placeholder&quot;>Solte aqui a ${pos + 1}ª etapa...</span>
+    `;
+    slot.ondragover = (e) => dragOver(e, true);
+    slot.ondrop = (e) => dropSlot(e, pos);
+    slot.ondragleave = dragLeave;
+  }
+
+  function preencherSlot(pos, etapaId) {
+    const etapa = etapasCorretas.find(e => e.id === etapaId);
+    const slot = document.getElementById('slot-' + pos);
+    slot.className = 'slot preenchido';
+    slot.innerHTML = `
+      <span class=&quot;slot-label&quot;>${pos + 1}.</span>
+      <span class=&quot;etapa-icon&quot;>${etapa.icon}</span>
+      <span class=&quot;etapa-texto&quot; style=&quot;font-weight:700;font-size:0.95rem&quot;>${etapa.texto}</span>
+    `;
+    slot.ondragstart = (e) => {
+      draggedId = etapaId;
+      dragSource = 'slot-' + pos;
+    };
+    slot.draggable = true;
+    slot.ondragover = (e) => dragOver(e, true);
+    slot.ondrop = (e) => dropSlot(e, pos);
+    slot.ondragleave = dragLeave;
+    slotContents[pos] = etapaId;
+    atualizarProgresso();
+  }
+
+  function dragOver(e, isSlot = false) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function dragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function drop(e, zona) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (zona === 'origem' &amp;&amp; draggedId !== null) {
+      // Devolver para a origem
+      if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+        const pos = parseInt(dragSource.split('-')[1]);
+        slotContents[pos] = null;
+        limparSlot(pos);
+      }
+      // Verificar se já está na origem
+      if (!document.getElementById('etapa-' + draggedId)) {
+        const etapa = etapasCorretas.find(e => e.id === draggedId);
+        document.getElementById('zonaOrigem').appendChild(criarCartao(etapa));
+      }
+      draggedId = null;
+      dragSource = null;
+      atualizarProgresso();
+    }
+  }
+
+  function dropSlot(e, pos) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+
+    if (draggedId === null) return;
+
+    // Se o slot já tem algo, trocar
+    const anteriorNeste = slotContents[pos];
+
+    if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const sourcePos = parseInt(dragSource.split('-')[1]);
+      if (anteriorNeste !== null) {
+        // Trocar
+        slotContents[sourcePos] = anteriorNeste;
+        preencherSlot(sourcePos, anteriorNeste);
+      } else {
+        slotContents[sourcePos] = null;
+        limparSlot(sourcePos);
+      }
+    } else {
+      // Vem da origem - remover da origem
+      const el = document.getElementById('etapa-' + draggedId);
+      if (el) el.remove();
+      // Se slot tinha algo, devolver à origem
+      if (anteriorNeste !== null) {
+        const etapaAnterior = etapasCorretas.find(e => e.id === anteriorNeste);
+        document.getElementById('zonaOrigem').appendChild(criarCartao(etapaAnterior));
+      }
+    }
+
+    preencherSlot(pos, draggedId);
+    draggedId = null;
+    dragSource = null;
+    atualizarProgresso();
+  }
+
+  function atualizarProgresso() {
+    const preenchidos = slotContents.filter(s => s !== null).length;
+    const pct = (preenchidos / 6) * 100;
+    document.getElementById('progressoFill').style.width = pct + '%';
+    document.getElementById('progressoTexto').textContent = `${preenchidos} de 6 etapas colocadas`;
+  }
+
+  function verificar() {
+    let acertos = 0;
+    let tudo = true;
+
+    for (let i = 0; i < 6; i++) {
+      const slot = document.getElementById('slot-' + i);
+      if (slotContents[i] === null) {
+        tudo = false;
+        continue;
+      }
+      if (slotContents[i] === i) {
+        acertos++;
+        slot.classList.remove('errado');
+        slot.classList.add('correto');
+      } else {
+        tudo = false;
+        slot.classList.remove('correto');
+        slot.classList.add('errado');
+      }
+    }
+
+    if (!tudo &amp;&amp; slotContents.some(s => s === null)) {
+      mostrarFeedback('⚠️ Coloque todas as etapas primeiro!', '#E67E22');
+      return;
+    }
+
+    if (acertos === 6) {
+      tocarSomAcerto();
+      mostrarFeedback('🎉 Perfeito!', '#2ECC71');
+      setTimeout(() => {
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    } else {
+      tocarSomErro();
+      mostrarFeedback(`🤔 ${acertos} de 6 corretos. Tente de novo!`, '#E74C3C');
+    }
+  }
+
+  function mostrarDica() {
+    const dicas = [
+      'Primeiro você precisa ter tudo separado!',
+      'A água precisa estar quente antes de usar.',
+      'O pó fica no coador para filtrar.',
+      'Depois que a água passa, o café está pronto.',
+      'O adoçante vai depois do café estar pronto.',
+      'Aí sim, hora de servir! 😋'
+    ];
+    // Encontrar primeira posição errada
+    for (let i = 0; i < 6; i++) {
+      if (slotContents[i] !== i) {
+        mostrarFeedback('💡 ' + dicas[i], '#F39C12');
+        return;
+      }
+    }
+    mostrarFeedback('✅ Tudo certo! Clique em Verificar!', '#2ECC71');
+  }
+
+  function mostrarFeedback(msg, cor) {
+    const fb = document.getElementById('feedback');
+    fb.textContent = msg;
+    fb.style.background = cor;
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2500);
+  }
+
+  function tocarSomAcerto() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notas = [523, 659, 784, 1046]; // C5 E5 G5 C6
+      notas.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+      });
+    } catch(e) {}
+  }
+
+  function tocarSomErro() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 200;
+      osc.type = 'sawtooth';
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    } catch(e) {}
+  }
+
+  function reiniciar() {
+    inicializar();
+    mostrarFeedback('🔄 Jogo reiniciado!', '#3498DB');
+  }
+
+  // Touch support
+  let touchEl = null;
+  let touchClone = null;
+
+  document.addEventListener('touchstart', (e) => {
+    const el = e.target.closest('.etapa, .slot.preenchido');
+    if (!el) return;
+    touchEl = el;
+  }, { passive: true });
+
+  inicializar();
+
+</script>
+</body>
+</html>" 
+              frameborder="0" 
+              id="iframe-jogo1"
+              style="width:100%;height:100%;border:none;"
+              allowfullscreen>
+      </iframe>
+    </div>
+    <div class="game-panel" id="panel-jogo2" style="display:none">
+      <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap');
+
+  :root {
+    --laranja: #FF6B35;
+    --laranja-dark: #E55A25;
+    --bg: #0d1b2a;
+    --card: #1b2c3e;
+    --card2: #243447;
+    --verde: #2ECC71;
+    --vermelho: #E74C3C;
+    --amarelo: #F1C40F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  
+
+  /* Topo */
+  .topo {
+    position: relative;
+    z-index: 2;
+    padding: 24px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .voltar {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    padding: 8px 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .voltar:hover { background: rgba(255,255,255,0.2); }
+
+  .titulo-bloco { text-align: center; flex: 1; }
+
+  .titulo-jogo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    color: var(--laranja);
+    text-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+
+  .subtitulo {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+    margin-top: 2px;
+  }
+
+  /* Placar */
+  .placar-bloco {
+    text-align: right;
+    min-width: 90px;
+  }
+
+  .placar-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .placar-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: var(--amarelo);
+    line-height: 1;
+    transition: transform 0.2s;
+  }
+
+  .placar-num.bump {
+    animation: bump 0.3s ease;
+  }
+
+  @keyframes bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+  }
+
+  /* Wrapper principal */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* Barra de progresso da rodada */
+  .rodada-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .rodada-label {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+  }
+
+  .rodada-barra {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .rodada-fill {
+    height: 100%;
+    background: var(--laranja);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  /* Card do desafio */
+  .desafio-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 22px;
+    border: 2px solid rgba(255,255,255,0.07);
+    animation: entrar 0.4s ease;
+  }
+
+  @keyframes entrar {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .desafio-pergunta {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .desafio-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 22px;
+  }
+
+  /* Lista de passos */
+  .passos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .passo-btn {
+    background: var(--card2);
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .passo-btn:hover {
+    border-color: var(--laranja);
+    background: rgba(255,107,53,0.08);
+    transform: translateX(4px);
+  }
+
+  .passo-btn.correto {
+    border-color: var(--verde) !important;
+    background: rgba(46,204,113,0.15) !important;
+    animation: flash-verde 0.5s ease;
+  }
+
+  .passo-btn.errado {
+    border-color: var(--vermelho) !important;
+    background: rgba(231,76,60,0.15) !important;
+    animation: shake 0.4s ease;
+  }
+
+  .passo-btn.nao-bug {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .passo-btn.desabilitado { pointer-events: none; }
+
+  @keyframes flash-verde {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    60% { transform: translateX(10px); }
+  }
+
+  .passo-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .passo-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+  .passo-texto {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .passo-seta {
+    font-size: 1.2rem;
+    opacity: 0.4;
+  }
+
+  /* Explicação */
+  .explicacao {
+    display: none;
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    animation: aparecer 0.4s ease;
+  }
+
+  .explicacao.erro-exp {
+    background: rgba(231,76,60,0.1);
+    border-color: rgba(231,76,60,0.3);
+  }
+
+  @keyframes aparecer {
+    from { opacity: 0; transform: scaleY(0.8); }
+    to { opacity: 1; transform: scaleY(1); }
+  }
+
+  .explicacao strong { color: var(--verde); }
+  .explicacao.erro-exp strong { color: var(--vermelho); }
+
+  /* Botão próxima */
+  .btn-proxima {
+    display: none;
+    margin: 20px auto 0;
+    padding: 14px 40px;
+    background: var(--laranja);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.4);
+  }
+
+  .btn-proxima:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+  /* Tela final */
+  .tela-final {
+    display: none;
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--card);
+    border-radius: 24px;
+    border: 2px solid var(--laranja);
+    box-shadow: 0 0 40px rgba(255,107,53,0.2);
+    animation: entrar 0.5s ease;
+  }
+
+  .tela-final .emoji-grande { font-size: 80px; display: block; margin-bottom: 16px; }
+  .tela-final h2 { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--laranja); margin-bottom: 12px; }
+  .tela-final .pontos-finais { font-size: 1.2rem; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+  .tela-final .pontos-num { font-family: 'Fredoka One', cursive; font-size: 3rem; color: var(--amarelo); }
+  .tela-final .msg-final { color: rgba(255,255,255,0.5); margin-top: 10px; font-size: 0.95rem; }
+
+  .btn-jogar-novo {
+    margin-top: 24px;
+    display: inline-block;
+    padding: 14px 40px;
+    background: var(--laranja);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.4);
+  }
+
+  .btn-jogar-novo:hover { transform: scale(1.05); }
+
+  /* Estrelinhas animadas */
+  .estrelas-anim {
+    display: none;
+    justify-content: center;
+    gap: 10px;
+    margin: 14px 0;
+    font-size: 2rem;
+  }
+
+  .estrela-item {
+    animation: popEstrela 0.4s ease forwards;
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  @keyframes popEstrela {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .estrela-item:nth-child(2) { animation-delay: 0.15s; }
+  .estrela-item:nth-child(3) { animation-delay: 0.3s; }
+
+  /* Feedback flutuante */
+  .feedback-float {
+    position: fixed;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #fff;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.35s;
+    white-space: nowrap;
+  }
+
+  .feedback-float.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+</style>
+</head>
+<body>
+<div class=&quot;topo&quot;>
+  
+  <div class=&quot;titulo-bloco&quot;>
+    <div class=&quot;titulo-jogo&quot;>🐛 Encontre o Bug!</div>
+    <p class=&quot;subtitulo&quot;>Descubra o passo errado!</p>
+  </div>
+  <div class=&quot;placar-bloco&quot;>
+    <div class=&quot;placar-label&quot;>Pontos</div>
+    <div class=&quot;placar-num&quot; id=&quot;placarNum&quot;>0</div>
+  </div>
+</div>
+
+<div class=&quot;wrapper&quot;>
+  <div class=&quot;rodada-info&quot;>
+    <span class=&quot;rodada-label&quot; id=&quot;rodadaLabel&quot;>Rodada 1 / 5</span>
+    <div class=&quot;rodada-barra&quot;><div class=&quot;rodada-fill&quot; id=&quot;rodadaFill&quot; style=&quot;width:20%&quot;></div></div>
+  </div>
+
+  <div id=&quot;jogo&quot;>
+    <div class=&quot;desafio-card&quot; id=&quot;desafioCard&quot;>
+      <!-- Preenchido por JS -->
+    </div>
+
+    <div id=&quot;explicacaoDiv&quot; class=&quot;explicacao&quot; style=&quot;display:none&quot;></div>
+
+    <button class=&quot;btn-proxima&quot; id=&quot;btnProxima&quot; onclick=&quot;proxima()&quot;>Próximo Desafio →</button>
+  </div>
+
+  <div class=&quot;tela-final&quot; id=&quot;telaFinal&quot;>
+    <span class=&quot;emoji-grande&quot; id=&quot;emojiFinal&quot;>🏆</span>
+    <h2 id=&quot;tituloFinal&quot;>Incrível!</h2>
+    <p class=&quot;pontos-finais&quot;>Sua pontuação final:</p>
+    <div class=&quot;pontos-num&quot; id=&quot;pontosFinais&quot;>0</div>
+    <div class=&quot;estrelas-anim&quot; id=&quot;estrelasAnim&quot;>
+      <span class=&quot;estrela-item&quot;>⭐</span>
+      <span class=&quot;estrela-item&quot;>⭐</span>
+      <span class=&quot;estrela-item&quot;>⭐</span>
+    </div>
+    <p class=&quot;msg-final&quot; id=&quot;msgFinal&quot;>Você é um expert em encontrar bugs!</p>
+    <button class=&quot;btn-jogar-novo&quot; onclick=&quot;reiniciarJogo()&quot;>🔄 Jogar Novamente</button>
+  </div>
+</div>
+
+<div class=&quot;feedback-float&quot; id=&quot;feedbackFloat&quot;></div>
+
+<script>
+  const TOTAL_RODADAS = 5;
+
+  const desafios = [
+    {
+      titulo: 'Escovando os Dentes',
+      emoji: '🦷',
+      descricao: 'Qual passo está fora de lugar?',
+      passos: [
+        { icon: '💧', texto: 'Molhar a escova de dentes', certo: false },
+        { icon: '🪥', texto: 'Colocar pasta na escova', certo: false },
+        { icon: '😴', texto: 'Dormir e escovar os dentes depois', certo: true, bugTexto: 'Você deve escovar os dentes ANTES de dormir, não depois! Ir dormir sem escovar estraga os dentes. 🦷' },
+        { icon: '🫧', texto: 'Escovar por 2 minutos', certo: false },
+        { icon: '💦', texto: 'Enxaguar a boca', certo: false },
+      ],
+      explicacaoCorreta: 'O passo <strong>&quot;Dormir e escovar depois&quot;</strong> é o bug! Devemos escovar os dentes ANTES de dormir para remover resíduos de comida.',
+    },
+    {
+      titulo: 'Fazendo o Café',
+      emoji: '☕',
+      descricao: 'Uma etapa está completamente errada — qual?',
+      passos: [
+        { icon: '🫙', texto: 'Separar o pó de café e o coador', certo: false },
+        { icon: '🔥', texto: 'Ferver a água', certo: false },
+        { icon: '🍵', texto: 'Servir o café antes de fazer', certo: true, bugTexto: 'Não dá para servir o café antes de fazê-lo! A ordem certa é: ferver a água, coar o café e SÓ ENTÃO servir. ☕' },
+        { icon: '🫗', texto: 'Colocar o pó no coador', certo: false },
+        { icon: '💧', texto: 'Passar a água quente pelo coador', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Servir antes de fazer&quot;</strong> é o bug! Impossível servir algo que ainda não foi preparado. A sequência lógica exige que o café seja feito primeiro.',
+    },
+    {
+      titulo: 'Colocando o Sapato',
+      emoji: '👟',
+      descricao: 'Encontre a etapa fora da ordem!',
+      passos: [
+        { icon: '🧦', texto: 'Colocar o sapato antes da meia', certo: true, bugTexto: 'O sapato vai em cima da meia, não antes! Coloque a meia primeiro, depois o sapato. Ordem importa! 👟' },
+        { icon: '👞', texto: 'Colocar a meia no pé', certo: false },
+        { icon: '👟', texto: 'Encaixar o pé no sapato', certo: false },
+        { icon: '🪢', texto: 'Amarrar o cadarço', certo: false },
+        { icon: '🚶', texto: 'Caminhar!', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Colocar o sapato antes da meia&quot;</strong> é o bug! A meia sempre vem antes do sapato. Se inverter, não funciona!',
+    },
+    {
+      titulo: 'Lavando a Louça',
+      emoji: '🍽️',
+      descricao: 'Um passo está na ordem errada — encontre!',
+      passos: [
+        { icon: '🍽️', texto: 'Juntar os pratos sujos', certo: false },
+        { icon: '🚿', texto: 'Enxaguar antes de ensaboar', certo: true, bugTexto: 'O certo é ensaboar PRIMEIRO e enxaguar DEPOIS! Enxaguar antes sem ensaboar não limpa nada. 🧼' },
+        { icon: '🧴', texto: 'Aplicar detergente e esfregar', certo: false },
+        { icon: '💧', texto: 'Enxaguar bem com água', certo: false },
+        { icon: '🧺', texto: 'Secar e guardar', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Enxaguar antes de ensaboar&quot;</strong> é o bug! O detergente precisa agir para limpar. A sequência correta: ensaboar → esfregar → enxaguar.',
+    },
+    {
+      titulo: 'Enviando uma Mensagem',
+      emoji: '📱',
+      descricao: 'Qual passo não faz sentido na ordem?',
+      passos: [
+        { icon: '📱', texto: 'Abrir o aplicativo de mensagens', certo: false },
+        { icon: '👤', texto: 'Escolher o contato', certo: false },
+        { icon: '✅', texto: 'Clicar em enviar antes de escrever', certo: true, bugTexto: 'Não dá para enviar uma mensagem em branco ou antes de escrever! Escreva o texto primeiro, depois envie. 📤' },
+        { icon: '⌨️', texto: 'Digitar o texto da mensagem', certo: false },
+        { icon: '📤', texto: 'Tocar em enviar', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Clicar em enviar antes de escrever&quot;</strong> é o bug! Uma mensagem em branco não comunica nada. Escreva sempre antes de enviar.',
+    },
+  ];
+
+  // Embaralhar a lista de desafios
+  function embaralhar(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let desafiosRodada = [];
+  let rodadaAtual = 0;
+  let pontuacao = 0;
+  let respondeu = false;
+
+  function iniciarJogo() {
+    desafiosRodada = embaralhar(desafios).slice(0, TOTAL_RODADAS);
+    rodadaAtual = 0;
+    pontuacao = 0;
+    document.getElementById('placarNum').textContent = '0';
+    document.getElementById('telaFinal').style.display = 'none';
+    document.getElementById('jogo').style.display = 'block';
+    mostrarDesafio();
+  }
+
+  function mostrarDesafio() {
+    respondeu = false;
+    const d = desafiosRodada[rodadaAtual];
+    const passos = embaralhar(d.passos);
+
+    // Barra de rodada
+    const pct = ((rodadaAtual + 1) / TOTAL_RODADAS) * 100;
+    document.getElementById('rodadaFill').style.width = pct + '%';
+    document.getElementById('rodadaLabel').textContent = `Rodada ${rodadaAtual + 1} / ${TOTAL_RODADAS}`;
+
+    // Renderizar card
+    let html = `
+      <div class=&quot;desafio-pergunta&quot;>${d.emoji} <span>Sequência:</span></div>
+      <div class=&quot;desafio-titulo&quot;>${d.titulo}</div>
+      <p style=&quot;color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:16px;font-weight:700;&quot;>${d.descricao}</p>
+      <div class=&quot;passos&quot;>
+    `;
+
+    passos.forEach((p, i) => {
+      html += `
+        <button class=&quot;passo-btn&quot; id=&quot;passo-${i}&quot; onclick=&quot;escolher(${i}, ${p.certo}, '${p.certo ? encodeURIComponent(d.explicacaoCorreta) : encodeURIComponent('❌ Esse passo está certo! Procure o que realmente está errado na sequência.')}', ${p.certo})&quot;>
+          <div class=&quot;passo-num&quot;>${i + 1}</div>
+          <span class=&quot;passo-icon&quot;>${p.icon}</span>
+          <span class=&quot;passo-texto&quot;>${p.texto}</span>
+          <span class=&quot;passo-seta&quot;>›</span>
+        </button>
+      `;
+    });
+
+    html += '</div>';
+    document.getElementById('desafioCard').innerHTML = html;
+    document.getElementById('explicacaoDiv').style.display = 'none';
+    document.getElementById('btnProxima').style.display = 'none';
+    document.getElementById('desafioCard').style.animation = 'none';
+    requestAnimationFrame(() => {
+      document.getElementById('desafioCard').style.animation = 'entrar 0.4s ease';
+    });
+  }
+
+  function escolher(idx, eCorreto, explicacaoEncoded, isBug) {
+    if (respondeu) return;
+    respondeu = true;
+
+    const btn = document.getElementById('passo-' + idx);
+    const explicacao = decodeURIComponent(explicacaoEncoded);
+
+    if (eCorreto) {
+      // Acertou!
+      btn.classList.add('correto');
+      pontuacao += 20;
+      document.getElementById('placarNum').textContent = pontuacao;
+      document.getElementById('placarNum').classList.add('bump');
+      setTimeout(() => document.getElementById('placarNum').classList.remove('bump'), 400);
+
+      tocarSom(true);
+      mostrarFeedbackFloat('🎉 Isso! Você encontrou o bug!', '#2ECC71');
+
+      const expDiv = document.getElementById('explicacaoDiv');
+      expDiv.className = 'explicacao';
+      expDiv.innerHTML = '✅ ' + explicacao;
+      expDiv.style.display = 'block';
+    } else {
+      // Errou
+      btn.classList.add('errado');
+      tocarSom(false);
+      mostrarFeedbackFloat('❌ Não é esse! Continue procurando...', '#E74C3C');
+
+      const expDiv = document.getElementById('explicacaoDiv');
+      expDiv.className = 'explicacao erro-exp';
+      expDiv.innerHTML = explicacao;
+      expDiv.style.display = 'block';
+
+      // Desabilitar os demais para mostrar a resposta após 1.5s
+      setTimeout(() => {
+        respondeu = false;
+        expDiv.style.display = 'none';
+        btn.classList.remove('errado');
+        btn.classList.add('nao-bug');
+      }, 1500);
+      return;
+    }
+
+    // Desabilitar todos os botões
+    document.querySelectorAll('.passo-btn').forEach((b, i) => {
+      if (i !== idx) b.classList.add('nao-bug');
+      b.classList.add('desabilitado');
+    });
+
+    const btnProxima = document.getElementById('btnProxima');
+    btnProxima.style.display = 'block';
+    btnProxima.textContent = rodadaAtual < TOTAL_RODADAS - 1 ? 'Próximo Desafio →' : '🏆 Ver Resultado';
+  }
+
+  function proxima() {
+    rodadaAtual++;
+    if (rodadaAtual >= TOTAL_RODADAS) {
+      mostrarFinal();
+    } else {
+      mostrarDesafio();
+    }
+  }
+
+  function mostrarFinal() {
+    document.getElementById('jogo').style.display = 'none';
+    const final = document.getElementById('telaFinal');
+    final.style.display = 'block';
+
+    document.getElementById('pontosFinais').textContent = pontuacao;
+
+    let emoji = '🥉';
+    let titulo = 'Bom esforço!';
+    let msg = 'Continue praticando!';
+    const pct = pontuacao / (TOTAL_RODADAS * 20);
+
+    if (pct === 1) {
+      emoji = '🏆'; titulo = 'Perfeito!'; msg = 'Você é um detetive de bugs nato! 100% correto!';
+    } else if (pct >= 0.8) {
+      emoji = '🥇'; titulo = 'Muito bem!'; msg = 'Você tem um olho afiado para erros!';
+    } else if (pct >= 0.6) {
+      emoji = '🥈'; titulo = 'Boa jogada!'; msg = 'Com prática você vai arrasar!';
+    }
+
+    document.getElementById('emojiFinal').textContent = emoji;
+    document.getElementById('tituloFinal').textContent = titulo;
+    document.getElementById('msgFinal').textContent = msg;
+
+    // Mostrar estrelas
+    const est = document.getElementById('estrelasAnim');
+    const qtdEstrelas = pct === 1 ? 3 : pct >= 0.6 ? 2 : 1;
+    est.style.display = 'flex';
+    const items = est.querySelectorAll('.estrela-item');
+    items.forEach((s, i) => {
+      s.style.display = i < qtdEstrelas ? 'inline' : 'none';
+    });
+
+    tocarSomFinal();
+  }
+
+  function reiniciarJogo() {
+    iniciarJogo();
+  }
+
+  function tocarSom(acerto) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      if (acerto) {
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } else {
+        osc.frequency.setValueAtTime(250, ctx.currentTime);
+        osc.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    } catch(e) {}
+  }
+
+  function tocarSomFinal() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [523, 659, 784, 1047, 784, 1047].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        const t = ctx.currentTime + i * 0.12;
+        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        osc.start(t);
+        osc.stop(t + 0.3);
+      });
+    } catch(e) {}
+  }
+
+  function mostrarFeedbackFloat(msg, cor) {
+    const fb = document.getElementById('feedbackFloat');
+    fb.textContent = msg;
+    fb.style.background = cor;
+    fb.style.boxShadow = `0 4px 30px ${cor}66`;
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2200);
+  }
+
+  iniciarJogo();
+</script>
+<script>
+
+  const TOTAL_RODADAS = 5;
+
+  const desafios = [
+    {
+      titulo: 'Escovando os Dentes',
+      emoji: '🦷',
+      descricao: 'Qual passo está fora de lugar?',
+      passos: [
+        { icon: '💧', texto: 'Molhar a escova de dentes', certo: false },
+        { icon: '🪥', texto: 'Colocar pasta na escova', certo: false },
+        { icon: '😴', texto: 'Dormir e escovar os dentes depois', certo: true, bugTexto: 'Você deve escovar os dentes ANTES de dormir, não depois! Ir dormir sem escovar estraga os dentes. 🦷' },
+        { icon: '🫧', texto: 'Escovar por 2 minutos', certo: false },
+        { icon: '💦', texto: 'Enxaguar a boca', certo: false },
+      ],
+      explicacaoCorreta: 'O passo <strong>&quot;Dormir e escovar depois&quot;</strong> é o bug! Devemos escovar os dentes ANTES de dormir para remover resíduos de comida.',
+    },
+    {
+      titulo: 'Fazendo o Café',
+      emoji: '☕',
+      descricao: 'Uma etapa está completamente errada — qual?',
+      passos: [
+        { icon: '🫙', texto: 'Separar o pó de café e o coador', certo: false },
+        { icon: '🔥', texto: 'Ferver a água', certo: false },
+        { icon: '🍵', texto: 'Servir o café antes de fazer', certo: true, bugTexto: 'Não dá para servir o café antes de fazê-lo! A ordem certa é: ferver a água, coar o café e SÓ ENTÃO servir. ☕' },
+        { icon: '🫗', texto: 'Colocar o pó no coador', certo: false },
+        { icon: '💧', texto: 'Passar a água quente pelo coador', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Servir antes de fazer&quot;</strong> é o bug! Impossível servir algo que ainda não foi preparado. A sequência lógica exige que o café seja feito primeiro.',
+    },
+    {
+      titulo: 'Colocando o Sapato',
+      emoji: '👟',
+      descricao: 'Encontre a etapa fora da ordem!',
+      passos: [
+        { icon: '🧦', texto: 'Colocar o sapato antes da meia', certo: true, bugTexto: 'O sapato vai em cima da meia, não antes! Coloque a meia primeiro, depois o sapato. Ordem importa! 👟' },
+        { icon: '👞', texto: 'Colocar a meia no pé', certo: false },
+        { icon: '👟', texto: 'Encaixar o pé no sapato', certo: false },
+        { icon: '🪢', texto: 'Amarrar o cadarço', certo: false },
+        { icon: '🚶', texto: 'Caminhar!', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Colocar o sapato antes da meia&quot;</strong> é o bug! A meia sempre vem antes do sapato. Se inverter, não funciona!',
+    },
+    {
+      titulo: 'Lavando a Louça',
+      emoji: '🍽️',
+      descricao: 'Um passo está na ordem errada — encontre!',
+      passos: [
+        { icon: '🍽️', texto: 'Juntar os pratos sujos', certo: false },
+        { icon: '🚿', texto: 'Enxaguar antes de ensaboar', certo: true, bugTexto: 'O certo é ensaboar PRIMEIRO e enxaguar DEPOIS! Enxaguar antes sem ensaboar não limpa nada. 🧼' },
+        { icon: '🧴', texto: 'Aplicar detergente e esfregar', certo: false },
+        { icon: '💧', texto: 'Enxaguar bem com água', certo: false },
+        { icon: '🧺', texto: 'Secar e guardar', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Enxaguar antes de ensaboar&quot;</strong> é o bug! O detergente precisa agir para limpar. A sequência correta: ensaboar → esfregar → enxaguar.',
+    },
+    {
+      titulo: 'Enviando uma Mensagem',
+      emoji: '📱',
+      descricao: 'Qual passo não faz sentido na ordem?',
+      passos: [
+        { icon: '📱', texto: 'Abrir o aplicativo de mensagens', certo: false },
+        { icon: '👤', texto: 'Escolher o contato', certo: false },
+        { icon: '✅', texto: 'Clicar em enviar antes de escrever', certo: true, bugTexto: 'Não dá para enviar uma mensagem em branco ou antes de escrever! Escreva o texto primeiro, depois envie. 📤' },
+        { icon: '⌨️', texto: 'Digitar o texto da mensagem', certo: false },
+        { icon: '📤', texto: 'Tocar em enviar', certo: false },
+      ],
+      explicacaoCorreta: '<strong>&quot;Clicar em enviar antes de escrever&quot;</strong> é o bug! Uma mensagem em branco não comunica nada. Escreva sempre antes de enviar.',
+    },
+  ];
+
+  // Embaralhar a lista de desafios
+  function embaralhar(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let desafiosRodada = [];
+  let rodadaAtual = 0;
+  let pontuacao = 0;
+  let respondeu = false;
+
+  function iniciarJogo() {
+    desafiosRodada = embaralhar(desafios).slice(0, TOTAL_RODADAS);
+    rodadaAtual = 0;
+    pontuacao = 0;
+    document.getElementById('placarNum').textContent = '0';
+    document.getElementById('telaFinal').style.display = 'none';
+    document.getElementById('jogo').style.display = 'block';
+    mostrarDesafio();
+  }
+
+  function mostrarDesafio() {
+    respondeu = false;
+    const d = desafiosRodada[rodadaAtual];
+    const passos = embaralhar(d.passos);
+
+    // Barra de rodada
+    const pct = ((rodadaAtual + 1) / TOTAL_RODADAS) * 100;
+    document.getElementById('rodadaFill').style.width = pct + '%';
+    document.getElementById('rodadaLabel').textContent = `Rodada ${rodadaAtual + 1} / ${TOTAL_RODADAS}`;
+
+    // Renderizar card
+    let html = `
+      <div class=&quot;desafio-pergunta&quot;>${d.emoji} <span>Sequência:</span></div>
+      <div class=&quot;desafio-titulo&quot;>${d.titulo}</div>
+      <p style=&quot;color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:16px;font-weight:700;&quot;>${d.descricao}</p>
+      <div class=&quot;passos&quot;>
+    `;
+
+    passos.forEach((p, i) => {
+      html += `
+        <button class=&quot;passo-btn&quot; id=&quot;passo-${i}&quot; onclick=&quot;escolher(${i}, ${p.certo}, '${p.certo ? encodeURIComponent(d.explicacaoCorreta) : encodeURIComponent('❌ Esse passo está certo! Procure o que realmente está errado na sequência.')}', ${p.certo})&quot;>
+          <div class=&quot;passo-num&quot;>${i + 1}</div>
+          <span class=&quot;passo-icon&quot;>${p.icon}</span>
+          <span class=&quot;passo-texto&quot;>${p.texto}</span>
+          <span class=&quot;passo-seta&quot;>›</span>
+        </button>
+      `;
+    });
+
+    html += '</div>';
+    document.getElementById('desafioCard').innerHTML = html;
+    document.getElementById('explicacaoDiv').style.display = 'none';
+    document.getElementById('btnProxima').style.display = 'none';
+    document.getElementById('desafioCard').style.animation = 'none';
+    requestAnimationFrame(() => {
+      document.getElementById('desafioCard').style.animation = 'entrar 0.4s ease';
+    });
+  }
+
+  function escolher(idx, eCorreto, explicacaoEncoded, isBug) {
+    if (respondeu) return;
+    respondeu = true;
+
+    const btn = document.getElementById('passo-' + idx);
+    const explicacao = decodeURIComponent(explicacaoEncoded);
+
+    if (eCorreto) {
+      // Acertou!
+      btn.classList.add('correto');
+      pontuacao += 20;
+      document.getElementById('placarNum').textContent = pontuacao;
+      document.getElementById('placarNum').classList.add('bump');
+      setTimeout(() => document.getElementById('placarNum').classList.remove('bump'), 400);
+
+      tocarSom(true);
+      mostrarFeedbackFloat('🎉 Isso! Você encontrou o bug!', '#2ECC71');
+
+      const expDiv = document.getElementById('explicacaoDiv');
+      expDiv.className = 'explicacao';
+      expDiv.innerHTML = '✅ ' + explicacao;
+      expDiv.style.display = 'block';
+    } else {
+      // Errou
+      btn.classList.add('errado');
+      tocarSom(false);
+      mostrarFeedbackFloat('❌ Não é esse! Continue procurando...', '#E74C3C');
+
+      const expDiv = document.getElementById('explicacaoDiv');
+      expDiv.className = 'explicacao erro-exp';
+      expDiv.innerHTML = explicacao;
+      expDiv.style.display = 'block';
+
+      // Desabilitar os demais para mostrar a resposta após 1.5s
+      setTimeout(() => {
+        respondeu = false;
+        expDiv.style.display = 'none';
+        btn.classList.remove('errado');
+        btn.classList.add('nao-bug');
+      }, 1500);
+      return;
+    }
+
+    // Desabilitar todos os botões
+    document.querySelectorAll('.passo-btn').forEach((b, i) => {
+      if (i !== idx) b.classList.add('nao-bug');
+      b.classList.add('desabilitado');
+    });
+
+    const btnProxima = document.getElementById('btnProxima');
+    btnProxima.style.display = 'block';
+    btnProxima.textContent = rodadaAtual < TOTAL_RODADAS - 1 ? 'Próximo Desafio →' : '🏆 Ver Resultado';
+  }
+
+  function proxima() {
+    rodadaAtual++;
+    if (rodadaAtual >= TOTAL_RODADAS) {
+      mostrarFinal();
+    } else {
+      mostrarDesafio();
+    }
+  }
+
+  function mostrarFinal() {
+    document.getElementById('jogo').style.display = 'none';
+    const final = document.getElementById('telaFinal');
+    final.style.display = 'block';
+
+    document.getElementById('pontosFinais').textContent = pontuacao;
+
+    let emoji = '🥉';
+    let titulo = 'Bom esforço!';
+    let msg = 'Continue praticando!';
+    const pct = pontuacao / (TOTAL_RODADAS * 20);
+
+    if (pct === 1) {
+      emoji = '🏆'; titulo = 'Perfeito!'; msg = 'Você é um detetive de bugs nato! 100% correto!';
+    } else if (pct >= 0.8) {
+      emoji = '🥇'; titulo = 'Muito bem!'; msg = 'Você tem um olho afiado para erros!';
+    } else if (pct >= 0.6) {
+      emoji = '🥈'; titulo = 'Boa jogada!'; msg = 'Com prática você vai arrasar!';
+    }
+
+    document.getElementById('emojiFinal').textContent = emoji;
+    document.getElementById('tituloFinal').textContent = titulo;
+    document.getElementById('msgFinal').textContent = msg;
+
+    // Mostrar estrelas
+    const est = document.getElementById('estrelasAnim');
+    const qtdEstrelas = pct === 1 ? 3 : pct >= 0.6 ? 2 : 1;
+    est.style.display = 'flex';
+    const items = est.querySelectorAll('.estrela-item');
+    items.forEach((s, i) => {
+      s.style.display = i < qtdEstrelas ? 'inline' : 'none';
+    });
+
+    tocarSomFinal();
+  }
+
+  function reiniciarJogo() {
+    iniciarJogo();
+  }
+
+  function tocarSom(acerto) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      if (acerto) {
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } else {
+        osc.frequency.setValueAtTime(250, ctx.currentTime);
+        osc.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    } catch(e) {}
+  }
+
+  function tocarSomFinal() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [523, 659, 784, 1047, 784, 1047].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        const t = ctx.currentTime + i * 0.12;
+        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        osc.start(t);
+        osc.stop(t + 0.3);
+      });
+    } catch(e) {}
+  }
+
+  function mostrarFeedbackFloat(msg, cor) {
+    const fb = document.getElementById('feedbackFloat');
+    fb.textContent = msg;
+    fb.style.background = cor;
+    fb.style.boxShadow = `0 4px 30px ${cor}66`;
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2200);
+  }
+
+  iniciarJogo();
+
+</script>
+</body>
+</html>" 
+              frameborder="0" 
+              id="iframe-jogo2"
+              style="width:100%;height:100%;border:none;"
+              allowfullscreen>
+      </iframe>
+    </div>
+    <div class="game-panel" id="panel-jogo3" style="display:none">
+      <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap');
+
+:root {
+  --azul: #3498DB;
+  --azul-dark: #2980B9;
+  --bg: #0d1b2a;
+  --card: #1b2c3e;
+  --card2: #243447;
+  --verde: #2ECC71;
+  --vermelho: #E74C3C;
+  --amarelo: #F1C40F;
+  --roxo: #9B59B6;
+  --laranja: #FF6B35;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+
+
+/* ── TOPO ── */
+.topo {
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 20px 12px;
+  max-width:980px; margin:0 auto;
+}
+
+.voltar {
+  background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.8); padding:8px 18px; border-radius:30px;
+  text-decoration:none; font-weight:700; font-size:0.9rem; transition:all .2s;
+}
+.voltar:hover { background:rgba(255,255,255,0.2); }
+
+.titulo-bloco { text-align:center; flex:1; }
+.titulo-jogo {
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.6rem,5vw,2.4rem);
+  color:var(--azul);
+  text-shadow:0 0 30px rgba(52,152,219,.5);
+}
+.subtitulo { color:rgba(255,255,255,.5); font-size:.88rem; margin-top:2px; }
+
+.fase-badge {
+  background:rgba(52,152,219,.15);
+  border:1px solid rgba(52,152,219,.35);
+  color:var(--azul);
+  padding:6px 18px; border-radius:30px;
+  font-family:'Fredoka One',cursive; font-size:1rem;
+  white-space:nowrap;
+}
+
+/* ── WRAPPER ── */
+.wrapper {
+  position:relative; z-index:1;
+  max-width:980px; margin:0 auto;
+  padding:0 16px 40px;
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:24px;
+  align-items:start;
+}
+
+@media(max-width:720px){
+  .wrapper{ grid-template-columns:1fr; }
+}
+
+/* ── GRADE ── */
+.grade-section { }
+
+.grade-wrapper {
+  background:var(--card);
+  border-radius:22px;
+  padding:20px;
+  border:2px solid rgba(255,255,255,.07);
+  overflow:hidden;
+}
+
+.grade-titulo {
+  font-family:'Fredoka One',cursive;
+  font-size:1.1rem; color:rgba(255,255,255,.5);
+  margin-bottom:14px; text-align:center; letter-spacing:.5px;
+}
+
+.grade {
+  display:grid;
+  gap:4px;
+  margin:0 auto;
+  max-width:420px;
+}
+
+.celula {
+  width:100%; aspect-ratio:1;
+  background:rgba(255,255,255,.04);
+  border-radius:10px;
+  border:1.5px solid rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(1.4rem,4vw,2.2rem);
+  transition: background .2s, border-color .2s;
+  position:relative;
+}
+
+.celula.parede {
+  background:rgba(52,152,219,.15);
+  border-color:rgba(52,152,219,.25);
+}
+
+.celula.caminho {
+  background:rgba(46,204,113,.12);
+  border-color:rgba(46,204,113,.3);
+  animation: brilho-caminho .4s ease;
+}
+
+@keyframes brilho-caminho {
+  0%{ background:rgba(46,204,113,.35); }
+  100%{ background:rgba(46,204,113,.12); }
+}
+
+.celula.erro-celula {
+  background:rgba(231,76,60,.2);
+  border-color:rgba(231,76,60,.5);
+  animation: shake .4s ease;
+}
+
+@keyframes shake {
+  0%,100%{ transform:translateX(0); }
+  25%{ transform:translateX(-6px); }
+  75%{ transform:translateX(6px); }
+}
+
+/* Robô animado */
+.robo-cell {
+  animation: robo-bounce .6s ease-in-out infinite;
+}
+
+@keyframes robo-bounce {
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-4px); }
+}
+
+/* ── PAINEL DIREITO ── */
+.painel {
+  display:flex; flex-direction:column; gap:16px;
+}
+
+.bloco-card {
+  background:var(--card);
+  border-radius:20px;
+  padding:18px 20px;
+  border:2px solid rgba(255,255,255,.07);
+}
+
+.bloco-titulo {
+  font-family:'Fredoka One',cursive;
+  font-size:1.05rem; color:rgba(255,255,255,.5);
+  margin-bottom:12px; letter-spacing:.5px;
+}
+
+/* Botões de comando */
+.cmds-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.cmd-btn {
+  background:var(--card2);
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px 8px;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  color:#fff; font-family:'Nunito',sans-serif;
+}
+
+.cmd-btn:hover {
+  transform:translateY(-3px);
+  border-color:var(--azul);
+  background:rgba(52,152,219,.12);
+  box-shadow:0 6px 20px rgba(52,152,219,.25);
+}
+
+.cmd-btn:active { transform:scale(.96); }
+
+.cmd-icon { font-size:1.8rem; }
+.cmd-label { font-size:.75rem; font-weight:800; color:rgba(255,255,255,.7); letter-spacing:.5px; }
+
+/* Fila de comandos */
+.fila {
+  min-height:58px;
+  background:rgba(255,255,255,.03);
+  border:2px dashed rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+
+.fila-vazia {
+  width:100%;
+  text-align:center;
+  color:rgba(255,255,255,.25);
+  font-size:.85rem;
+  font-style:italic;
+}
+
+.cmd-tag {
+  background:rgba(52,152,219,.2);
+  border:1px solid rgba(52,152,219,.4);
+  color:var(--azul);
+  padding:6px 12px;
+  border-radius:20px;
+  font-family:'Fredoka One',cursive;
+  font-size:.88rem;
+  cursor:pointer;
+  transition:all .15s;
+  display:flex; align-items:center; gap:5px;
+  user-select:none;
+}
+
+.cmd-tag:hover {
+  background:rgba(231,76,60,.2);
+  border-color:rgba(231,76,60,.5);
+  color:var(--vermelho);
+}
+
+.cmd-tag .cmd-tag-x {
+  opacity:.6; font-size:.75rem; margin-left:2px;
+}
+
+/* Contadores */
+.fila-info {
+  display:flex; justify-content:space-between;
+  font-size:.78rem; color:rgba(255,255,255,.35);
+  margin-top:6px; font-weight:700;
+}
+
+/* Botões de ação */
+.acoes {
+  display:flex; flex-direction:column; gap:10px;
+}
+
+.btn-exec {
+  padding:15px;
+  border:none; border-radius:14px;
+  font-family:'Fredoka One',cursive; font-size:1.1rem;
+  cursor:pointer; transition:all .2s;
+  letter-spacing:.3px;
+}
+
+.btn-rodar {
+  background:var(--azul);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(52,152,219,.4);
+}
+.btn-rodar:hover { transform:scale(1.03); filter:brightness(1.1); }
+.btn-rodar:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+.btn-limpar {
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.15);
+}
+.btn-limpar:hover { background:rgba(255,255,255,.15); }
+
+/* Mensagem de status */
+.status-msg {
+  border-radius:14px; padding:14px 16px;
+  font-weight:700; font-size:.95rem; line-height:1.4;
+  display:none; animation:aparecer .4s ease;
+}
+
+@keyframes aparecer {
+  from{ opacity:0; transform:translateY(8px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.status-msg.sucesso {
+  background:rgba(46,204,113,.15);
+  border:1px solid rgba(46,204,113,.35);
+  color:var(--verde);
+  display:block;
+}
+
+.status-msg.erro {
+  background:rgba(231,76,60,.12);
+  border:1px solid rgba(231,76,60,.3);
+  color:#ff8a80;
+  display:block;
+}
+
+/* Seletor de fase */
+.fases-row {
+  display:flex; gap:8px; flex-wrap:wrap;
+}
+
+.fase-btn {
+  flex:1; min-width:60px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.5);
+  padding:8px 6px;
+  border-radius:10px;
+  font-family:'Fredoka One',cursive; font-size:.85rem;
+  cursor:pointer; transition:all .2s;
+}
+
+.fase-btn.ativa {
+  background:rgba(52,152,219,.2);
+  border-color:var(--azul);
+  color:var(--azul);
+}
+
+.fase-btn:hover:not(.ativa) { background:rgba(255,255,255,.1); }
+
+/* Legenda */
+.legenda { display:flex; gap:14px; flex-wrap:wrap; }
+
+.leg-item {
+  display:flex; align-items:center; gap:6px;
+  font-size:.78rem; color:rgba(255,255,255,.45); font-weight:700;
+}
+
+/* Animação de execução */
+.executando .btn-rodar { animation:pulsar .6s ease infinite; }
+
+@keyframes pulsar {
+  0%,100%{ box-shadow:0 4px 20px rgba(52,152,219,.4); }
+  50%{ box-shadow:0 4px 40px rgba(52,152,219,.8); }
+}
+
+/* Feedback float */
+.feedback-float {
+  position:fixed; top:18%; left:50%;
+  transform:translateX(-50%) translateY(-15px);
+  padding:13px 28px; border-radius:50px;
+  font-family:'Fredoka One',cursive; font-size:1.2rem; color:#fff;
+  z-index:1000; pointer-events:none; opacity:0; transition:all .3s;
+  white-space:nowrap;
+}
+.feedback-float.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Confetti */
+.confetti-container {
+  position:fixed; inset:0; pointer-events:none; z-index:999;
+  overflow:hidden;
+}
+
+.conf { position:absolute; width:10px; height:10px; border-radius:2px; opacity:0; }
+
+</style>
+</head>
+<body>
+<div class=&quot;topo&quot;>
+  
+  <div class=&quot;titulo-bloco&quot;>
+    <div class=&quot;titulo-jogo&quot;>🤖 Programando o Robô</div>
+    <p class=&quot;subtitulo&quot;>Use comandos para guiar o robô até o café!</p>
+  </div>
+  <div class=&quot;fase-badge&quot; id=&quot;faseBadge&quot;>Fase 1</div>
+</div>
+
+<div class=&quot;wrapper&quot;>
+  <!-- Grade do labirinto -->
+  <div class=&quot;grade-section&quot;>
+    <div class=&quot;grade-wrapper&quot;>
+      <div class=&quot;grade-titulo&quot;>🗺️ Mapa do Labirinto</div>
+      <div class=&quot;grade&quot; id=&quot;grade&quot;></div>
+    </div>
+  </div>
+
+  <!-- Painel de programação -->
+  <div class=&quot;painel&quot;>
+
+    <!-- Seletor de fase -->
+    <div class=&quot;bloco-card&quot;>
+      <div class=&quot;bloco-titulo&quot;>🎮 Escolher Fase</div>
+      <div class=&quot;fases-row&quot; id=&quot;fasesRow&quot;></div>
+    </div>
+
+    <!-- Comandos disponíveis -->
+    <div class=&quot;bloco-card&quot;>
+      <div class=&quot;bloco-titulo&quot;>🕹️ Comandos</div>
+      <div class=&quot;cmds-grid&quot;>
+        <button class=&quot;cmd-btn&quot; onclick=&quot;adicionarCmd('⬆️','FRENTE')&quot;>
+          <span class=&quot;cmd-icon&quot;>⬆️</span>
+          <span class=&quot;cmd-label&quot;>FRENTE</span>
+        </button>
+        <button class=&quot;cmd-btn&quot; onclick=&quot;adicionarCmd('⬅️','ESQ')&quot;>
+          <span class=&quot;cmd-icon&quot;>⬅️</span>
+          <span class=&quot;cmd-label&quot;>ESQUERDA</span>
+        </button>
+        <button class=&quot;cmd-btn&quot; onclick=&quot;adicionarCmd('➡️','DIR')&quot;>
+          <span class=&quot;cmd-icon&quot;>➡️</span>
+          <span class=&quot;cmd-label&quot;>DIREITA</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Fila de comandos -->
+    <div class=&quot;bloco-card&quot;>
+      <div class=&quot;bloco-titulo&quot;>📋 Meu Programa</div>
+      <div class=&quot;fila&quot; id=&quot;fila&quot;>
+        <span class=&quot;fila-vazia&quot; id=&quot;filaVazia&quot;>Clique nos comandos acima para programar o robô...</span>
+      </div>
+      <div class=&quot;fila-info&quot;>
+        <span id=&quot;cmdCount&quot;>0 comandos</span>
+        <span>Clique num comando para removê-lo</span>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class=&quot;acoes&quot;>
+      <button class=&quot;btn-exec btn-rodar&quot; id=&quot;btnRodar&quot; onclick=&quot;executar()&quot;>▶ Executar Programa</button>
+      <button class=&quot;btn-exec btn-limpar&quot; onclick=&quot;limparFila()&quot;>🗑️ Limpar Tudo</button>
+    </div>
+
+    <!-- Status -->
+    <div class=&quot;status-msg&quot; id=&quot;statusMsg&quot;></div>
+
+    <!-- Legenda -->
+    <div class=&quot;bloco-card&quot;>
+      <div class=&quot;bloco-titulo&quot;>📖 Legenda</div>
+      <div class=&quot;legenda&quot;>
+        <div class=&quot;leg-item&quot;><span>🤖</span> Robô (você)</div>
+        <div class=&quot;leg-item&quot;><span>☕</span> Objetivo</div>
+        <div class=&quot;leg-item&quot;><span>🧱</span> Parede</div>
+        <div class=&quot;leg-item&quot;><span>⬜</span> Caminho livre</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class=&quot;feedback-float&quot; id=&quot;feedbackFloat&quot;></div>
+<div class=&quot;confetti-container&quot; id=&quot;confettiContainer&quot;></div>
+
+<script>
+// ═══════════════════════════════════════
+// FASES
+// ═══════════════════════════════════════
+// Grade: 0=livre, 1=parede, R=robô, C=café
+const FASES = [
+  {
+    nome: 'Fase 1',
+    cols: 4, rows: 4,
+    // 0=livre, 1=parede
+    mapa: [
+      [0,0,0,0],
+      [0,1,1,0],
+      [0,0,0,0],
+      [1,1,0,0],
+    ],
+    robo: {r:0, c:0, dir:'S'}, // S=Sul(baixo) N=Norte E=Leste W=Oeste
+    cafe: {r:3, c:3},
+    dica: 'Tente: Frente → Frente → Direita → Frente → Frente → Frente',
+  },
+  {
+    nome: 'Fase 2',
+    cols: 5, rows: 5,
+    mapa: [
+      [0,1,0,0,0],
+      [0,1,0,1,0],
+      [0,0,0,1,0],
+      [1,1,0,0,0],
+      [0,0,0,1,0],
+    ],
+    robo: {r:0, c:0, dir:'S'},
+    cafe: {r:4, c:4},
+    dica: 'Pense passo a passo! Evite as paredes.',
+  },
+  {
+    nome: 'Fase 3',
+    cols: 6, rows: 5,
+    mapa: [
+      [0,0,1,0,0,0],
+      [1,0,1,0,1,0],
+      [0,0,0,0,1,0],
+      [0,1,1,1,0,0],
+      [0,0,0,0,0,0],
+    ],
+    robo: {r:0, c:0, dir:'S'},
+    cafe: {r:4, c:5},
+    dica: 'Fase difícil! Planeje o caminho antes.',
+  },
+];
+
+// Direções: N=Norte(-row) S=Sul(+row) E=Leste(+col) W=Oeste(-col)
+const DIR_DELTA = {
+  N: {dr:-1, dc:0},
+  S: {dr:1,  dc:0},
+  E: {dr:0,  dc:1},
+  W: {dr:0,  dc:-1},
+};
+
+// Virar à esquerda
+const VIRAR_ESQ = { N:'W', W:'S', S:'E', E:'N' };
+const VIRAR_DIR = { N:'E', E:'S', S:'W', W:'N' };
+
+const DIR_EMOJI = { N:'🤖↑', S:'🤖↓', E:'🤖→', W:'🤖←' };
+
+let faseAtual = 0;
+let roboPos = {};
+let comandos = [];
+let executando = false;
+
+// ═══════════════════════════════════════
+// INICIALIZAÇÃO
+// ═══════════════════════════════════════
+function init() {
+  // Gerar botões de fase
+  const fasesRow = document.getElementById('fasesRow');
+  fasesRow.innerHTML = '';
+  FASES.forEach((f, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'fase-btn' + (i === faseAtual ? ' ativa' : '');
+    btn.textContent = f.nome;
+    btn.onclick = () => selecionarFase(i);
+    fasesRow.appendChild(btn);
+  });
+
+  carregarFase(faseAtual);
+}
+
+function selecionarFase(idx) {
+  faseAtual = idx;
+  limparFila();
+  document.querySelectorAll('.fase-btn').forEach((b, i) => {
+    b.classList.toggle('ativa', i === idx);
+  });
+  carregarFase(idx);
+  esconderStatus();
+}
+
+function carregarFase(idx) {
+  const fase = FASES[idx];
+  document.getElementById('faseBadge').textContent = fase.nome;
+
+  // Clonar posição do robô
+  roboPos = { r: fase.robo.r, c: fase.robo.c, dir: fase.robo.dir };
+
+  renderizarGrade();
+}
+
+// ═══════════════════════════════════════
+// RENDERIZAR GRADE
+// ═══════════════════════════════════════
+function renderizarGrade(caminhoPercorrido = [], erroCelula = null) {
+  const fase = FASES[faseAtual];
+  const grade = document.getElementById('grade');
+  grade.style.gridTemplateColumns = `repeat(${fase.cols}, 1fr)`;
+  grade.innerHTML = '';
+
+  for (let r = 0; r < fase.rows; r++) {
+    for (let c = 0; c < fase.cols; c++) {
+      const cel = document.createElement('div');
+      cel.className = 'celula';
+      cel.id = `cel-${r}-${c}`;
+
+      const isParede = fase.mapa[r][c] === 1;
+      const isRobo = r === roboPos.r &amp;&amp; c === roboPos.c;
+      const isCafe = r === fase.cafe.r &amp;&amp; c === fase.cafe.c;
+      const isCaminho = caminhoPercorrido.some(p => p.r === r &amp;&amp; p.c === c) &amp;&amp; !isRobo;
+      const isErro = erroCelula &amp;&amp; erroCelula.r === r &amp;&amp; erroCelula.c === c;
+
+      if (isParede) {
+        cel.classList.add('parede');
+        cel.textContent = '🧱';
+      } else if (isRobo) {
+        const span = document.createElement('span');
+        span.className = 'robo-cell';
+        span.textContent = DIR_EMOJI[roboPos.dir] || '🤖';
+        cel.appendChild(span);
+      } else if (isCafe) {
+        cel.textContent = '☕';
+      } else if (isErro) {
+        cel.classList.add('erro-celula');
+        cel.textContent = '💥';
+      } else if (isCaminho) {
+        cel.classList.add('caminho');
+        cel.textContent = '·';
+      }
+
+      grade.appendChild(cel);
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+// FILA DE COMANDOS
+// ═══════════════════════════════════════
+function adicionarCmd(icon, label) {
+  if (executando) return;
+  if (comandos.length >= 20) {
+    mostrarFeedback('⚠️ Máximo de 20 comandos!', '#F39C12');
+    return;
+  }
+  comandos.push({ icon, label });
+  renderizarFila();
+}
+
+function removerCmd(idx) {
+  if (executando) return;
+  comandos.splice(idx, 1);
+  renderizarFila();
+}
+
+function limparFila() {
+  if (executando) return;
+  comandos = [];
+  renderizarFila();
+  esconderStatus();
+  carregarFase(faseAtual);
+}
+
+function renderizarFila() {
+  const fila = document.getElementById('fila');
+  const vazia = document.getElementById('filaVazia');
+  fila.innerHTML = '';
+
+  if (comandos.length === 0) {
+    vazia.style.display = 'block';
+    fila.appendChild(vazia);
+  } else {
+    vazia.style.display = 'none';
+    comandos.forEach((cmd, i) => {
+      const tag = document.createElement('div');
+      tag.className = 'cmd-tag';
+      tag.innerHTML = `${cmd.icon} <span>${cmd.label}</span><span class=&quot;cmd-tag-x&quot;>✕</span>`;
+      tag.title = 'Clique para remover';
+      tag.onclick = () => removerCmd(i);
+      fila.appendChild(tag);
+    });
+  }
+
+  document.getElementById('cmdCount').textContent = `${comandos.length} comando${comandos.length !== 1 ? 's' : ''}`;
+}
+
+// ═══════════════════════════════════════
+// EXECUÇÃO
+// ═══════════════════════════════════════
+async function executar() {
+  if (executando) return;
+  if (comandos.length === 0) {
+    mostrarFeedback('⚠️ Adicione pelo menos um comando!', '#F39C12');
+    return;
+  }
+
+  executando = true;
+  esconderStatus();
+  document.getElementById('btnRodar').disabled = true;
+  document.querySelector('.wrapper').classList.add('executando');
+
+  // Resetar posição do robô
+  const fase = FASES[faseAtual];
+  roboPos = { r: fase.robo.r, c: fase.robo.c, dir: fase.robo.dir };
+  renderizarGrade();
+
+  const caminhoPercorrido = [];
+  let erro = null;
+
+  for (let i = 0; i < comandos.length; i++) {
+    const cmd = comandos[i];
+
+    // Atualizar highlight na fila
+    document.querySelectorAll('.cmd-tag').forEach((t, j) => {
+      t.style.background = j === i ? 'rgba(52,152,219,.45)' : '';
+      t.style.borderColor = j === i ? 'var(--azul)' : '';
+      t.style.transform = j === i ? 'scale(1.08)' : '';
+    });
+
+    await esperar(420);
+
+    if (cmd.label === 'FRENTE') {
+      const delta = DIR_DELTA[roboPos.dir];
+      const nr = roboPos.r + delta.dr;
+      const nc = roboPos.c + delta.dc;
+
+      // Verificar limites
+      if (nr < 0 || nr >= fase.rows || nc < 0 || nc >= fase.cols) {
+        erro = { r: roboPos.r, c: roboPos.c };
+        renderizarGrade(caminhoPercorrido, erro);
+        await esperar(300);
+        mostrarErro(`💥 O robô tentou sair do mapa no passo ${i+1}! Verifique a direção.`);
+        break;
+      }
+
+      // Verificar parede
+      if (fase.mapa[nr][nc] === 1) {
+        erro = { r: nr, c: nc };
+        renderizarGrade(caminhoPercorrido, erro);
+        await esperar(300);
+        mostrarErro(`🧱 O robô bateu em uma parede no passo ${i+1}! Mude o caminho.`);
+        break;
+      }
+
+      caminhoPercorrido.push({ r: roboPos.r, c: roboPos.c });
+      roboPos.r = nr;
+      roboPos.c = nc;
+
+    } else if (cmd.label === 'ESQ') {
+      roboPos.dir = VIRAR_ESQ[roboPos.dir];
+    } else if (cmd.label === 'DIR') {
+      roboPos.dir = VIRAR_DIR[roboPos.dir];
+    }
+
+    renderizarGrade(caminhoPercorrido);
+    tocarSomPasso();
+
+    // Verificar chegada
+    if (roboPos.r === fase.cafe.r &amp;&amp; roboPos.c === fase.cafe.c) {
+      await esperar(300);
+      mostrarSucesso();
+      break;
+    }
+  }
+
+  // Limpar highlight da fila
+  document.querySelectorAll('.cmd-tag').forEach(t => {
+    t.style.background = '';
+    t.style.borderColor = '';
+    t.style.transform = '';
+  });
+
+  if (!erro &amp;&amp; !(roboPos.r === fase.cafe.r &amp;&amp; roboPos.c === fase.cafe.c)) {
+    mostrarErro(`🤔 O robô parou antes de chegar ao café! Adicione mais comandos. ${FASES[faseAtual].dica ? '<br><small>💡 Dica: ' + FASES[faseAtual].dica + '</small>' : ''}`);
+  }
+
+  executando = false;
+  document.getElementById('btnRodar').disabled = false;
+  document.querySelector('.wrapper').classList.remove('executando');
+}
+
+function esperar(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+// ═══════════════════════════════════════
+// FEEDBACK
+// ═══════════════════════════════════════
+function mostrarSucesso() {
+  const msgDiv = document.getElementById('statusMsg');
+  msgDiv.className = 'status-msg sucesso';
+  const proxFase = faseAtual < FASES.length - 1;
+  msgDiv.innerHTML = `🎉 <strong>Parabéns! O robô chegou ao café!</strong><br>${proxFase ? `Você completou a ${FASES[faseAtual].nome}!` : '🏆 Você completou TODAS as fases!'} `;
+  if (proxFase) {
+    msgDiv.innerHTML += `<br><button onclick=&quot;selecionarFase(${faseAtual+1})&quot; style=&quot;margin-top:10px;padding:8px 20px;background:var(--verde);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>Próxima Fase →</button>`;
+  }
+
+  tocarSomAcerto();
+  lancarConfete();
+  mostrarFeedback('☕ Robô chegou!', '#2ECC71');
+}
+
+function mostrarErro(msg) {
+  const msgDiv = document.getElementById('statusMsg');
+  msgDiv.className = 'status-msg erro';
+  msgDiv.innerHTML = msg;
+  tocarSomErro();
+}
+
+function esconderStatus() {
+  document.getElementById('statusMsg').className = 'status-msg';
+}
+
+function mostrarFeedback(msg, cor) {
+  const fb = document.getElementById('feedbackFloat');
+  fb.textContent = msg;
+  fb.style.background = cor;
+  fb.style.boxShadow = `0 4px 30px ${cor}66`;
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════════════
+// SONS
+// ═══════════════════════════════════════
+function tocarSomPasso() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 400 + Math.random() * 100;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
+  } catch(e){}
+}
+
+function tocarSomAcerto() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523,659,784,1046].forEach((f,i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = f; osc.type = 'sine';
+      const t = ctx.currentTime + i*0.12;
+      gain.gain.setValueAtTime(0.28, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t+0.3);
+      osc.start(t); osc.stop(t+0.35);
+    });
+  } catch(e){}
+}
+
+function tocarSomErro() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 220; osc.type = 'sawtooth';
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════
+// CONFETE
+// ═══════════════════════════════════════
+function lancarConfete() {
+  const cont = document.getElementById('confettiContainer');
+  cont.innerHTML = '';
+  const cores = ['#3498DB','#2ECC71','#F1C40F','#E74C3C','#9B59B6','#FF6B35'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:-20px;
+      background:${cores[Math.floor(Math.random()*cores.length)]};
+      transform:rotate(${Math.random()*360}deg);
+      animation: cadaConf ${1.2+Math.random()*1.5}s ease forwards;
+      animation-delay: ${Math.random()*0.5}s;
+    `;
+    cont.appendChild(el);
+  }
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes cadaConf {
+      0%{ opacity:1; transform:translateY(0) rotate(0deg); }
+      100%{ opacity:0; transform:translateY(${60+Math.random()*40}vh) rotate(${360+Math.random()*360}deg); }
+    }
+  `;
+  document.head.appendChild(style);
+  setTimeout(() => { cont.innerHTML = ''; }, 3000);
+}
+
+init();
+</script>
+<script>
+
+// ═══════════════════════════════════════
+// FASES
+// ═══════════════════════════════════════
+// Grade: 0=livre, 1=parede, R=robô, C=café
+const FASES = [
+  {
+    nome: 'Fase 1',
+    cols: 4, rows: 4,
+    // 0=livre, 1=parede
+    mapa: [
+      [0,0,0,0],
+      [0,1,1,0],
+      [0,0,0,0],
+      [1,1,0,0],
+    ],
+    robo: {r:0, c:0, dir:'S'}, // S=Sul(baixo) N=Norte E=Leste W=Oeste
+    cafe: {r:3, c:3},
+    dica: 'Tente: Frente → Frente → Direita → Frente → Frente → Frente',
+  },
+  {
+    nome: 'Fase 2',
+    cols: 5, rows: 5,
+    mapa: [
+      [0,1,0,0,0],
+      [0,1,0,1,0],
+      [0,0,0,1,0],
+      [1,1,0,0,0],
+      [0,0,0,1,0],
+    ],
+    robo: {r:0, c:0, dir:'S'},
+    cafe: {r:4, c:4},
+    dica: 'Pense passo a passo! Evite as paredes.',
+  },
+  {
+    nome: 'Fase 3',
+    cols: 6, rows: 5,
+    mapa: [
+      [0,0,1,0,0,0],
+      [1,0,1,0,1,0],
+      [0,0,0,0,1,0],
+      [0,1,1,1,0,0],
+      [0,0,0,0,0,0],
+    ],
+    robo: {r:0, c:0, dir:'S'},
+    cafe: {r:4, c:5},
+    dica: 'Fase difícil! Planeje o caminho antes.',
+  },
+];
+
+// Direções: N=Norte(-row) S=Sul(+row) E=Leste(+col) W=Oeste(-col)
+const DIR_DELTA = {
+  N: {dr:-1, dc:0},
+  S: {dr:1,  dc:0},
+  E: {dr:0,  dc:1},
+  W: {dr:0,  dc:-1},
+};
+
+// Virar à esquerda
+const VIRAR_ESQ = { N:'W', W:'S', S:'E', E:'N' };
+const VIRAR_DIR = { N:'E', E:'S', S:'W', W:'N' };
+
+const DIR_EMOJI = { N:'🤖↑', S:'🤖↓', E:'🤖→', W:'🤖←' };
+
+let faseAtual = 0;
+let roboPos = {};
+let comandos = [];
+let executando = false;
+
+// ═══════════════════════════════════════
+// INICIALIZAÇÃO
+// ═══════════════════════════════════════
+function init() {
+  // Gerar botões de fase
+  const fasesRow = document.getElementById('fasesRow');
+  fasesRow.innerHTML = '';
+  FASES.forEach((f, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'fase-btn' + (i === faseAtual ? ' ativa' : '');
+    btn.textContent = f.nome;
+    btn.onclick = () => selecionarFase(i);
+    fasesRow.appendChild(btn);
+  });
+
+  carregarFase(faseAtual);
+}
+
+function selecionarFase(idx) {
+  faseAtual = idx;
+  limparFila();
+  document.querySelectorAll('.fase-btn').forEach((b, i) => {
+    b.classList.toggle('ativa', i === idx);
+  });
+  carregarFase(idx);
+  esconderStatus();
+}
+
+function carregarFase(idx) {
+  const fase = FASES[idx];
+  document.getElementById('faseBadge').textContent = fase.nome;
+
+  // Clonar posição do robô
+  roboPos = { r: fase.robo.r, c: fase.robo.c, dir: fase.robo.dir };
+
+  renderizarGrade();
+}
+
+// ═══════════════════════════════════════
+// RENDERIZAR GRADE
+// ═══════════════════════════════════════
+function renderizarGrade(caminhoPercorrido = [], erroCelula = null) {
+  const fase = FASES[faseAtual];
+  const grade = document.getElementById('grade');
+  grade.style.gridTemplateColumns = `repeat(${fase.cols}, 1fr)`;
+  grade.innerHTML = '';
+
+  for (let r = 0; r < fase.rows; r++) {
+    for (let c = 0; c < fase.cols; c++) {
+      const cel = document.createElement('div');
+      cel.className = 'celula';
+      cel.id = `cel-${r}-${c}`;
+
+      const isParede = fase.mapa[r][c] === 1;
+      const isRobo = r === roboPos.r &amp;&amp; c === roboPos.c;
+      const isCafe = r === fase.cafe.r &amp;&amp; c === fase.cafe.c;
+      const isCaminho = caminhoPercorrido.some(p => p.r === r &amp;&amp; p.c === c) &amp;&amp; !isRobo;
+      const isErro = erroCelula &amp;&amp; erroCelula.r === r &amp;&amp; erroCelula.c === c;
+
+      if (isParede) {
+        cel.classList.add('parede');
+        cel.textContent = '🧱';
+      } else if (isRobo) {
+        const span = document.createElement('span');
+        span.className = 'robo-cell';
+        span.textContent = DIR_EMOJI[roboPos.dir] || '🤖';
+        cel.appendChild(span);
+      } else if (isCafe) {
+        cel.textContent = '☕';
+      } else if (isErro) {
+        cel.classList.add('erro-celula');
+        cel.textContent = '💥';
+      } else if (isCaminho) {
+        cel.classList.add('caminho');
+        cel.textContent = '·';
+      }
+
+      grade.appendChild(cel);
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+// FILA DE COMANDOS
+// ═══════════════════════════════════════
+function adicionarCmd(icon, label) {
+  if (executando) return;
+  if (comandos.length >= 20) {
+    mostrarFeedback('⚠️ Máximo de 20 comandos!', '#F39C12');
+    return;
+  }
+  comandos.push({ icon, label });
+  renderizarFila();
+}
+
+function removerCmd(idx) {
+  if (executando) return;
+  comandos.splice(idx, 1);
+  renderizarFila();
+}
+
+function limparFila() {
+  if (executando) return;
+  comandos = [];
+  renderizarFila();
+  esconderStatus();
+  carregarFase(faseAtual);
+}
+
+function renderizarFila() {
+  const fila = document.getElementById('fila');
+  const vazia = document.getElementById('filaVazia');
+  fila.innerHTML = '';
+
+  if (comandos.length === 0) {
+    vazia.style.display = 'block';
+    fila.appendChild(vazia);
+  } else {
+    vazia.style.display = 'none';
+    comandos.forEach((cmd, i) => {
+      const tag = document.createElement('div');
+      tag.className = 'cmd-tag';
+      tag.innerHTML = `${cmd.icon} <span>${cmd.label}</span><span class=&quot;cmd-tag-x&quot;>✕</span>`;
+      tag.title = 'Clique para remover';
+      tag.onclick = () => removerCmd(i);
+      fila.appendChild(tag);
+    });
+  }
+
+  document.getElementById('cmdCount').textContent = `${comandos.length} comando${comandos.length !== 1 ? 's' : ''}`;
+}
+
+// ═══════════════════════════════════════
+// EXECUÇÃO
+// ═══════════════════════════════════════
+async function executar() {
+  if (executando) return;
+  if (comandos.length === 0) {
+    mostrarFeedback('⚠️ Adicione pelo menos um comando!', '#F39C12');
+    return;
+  }
+
+  executando = true;
+  esconderStatus();
+  document.getElementById('btnRodar').disabled = true;
+  document.querySelector('.wrapper').classList.add('executando');
+
+  // Resetar posição do robô
+  const fase = FASES[faseAtual];
+  roboPos = { r: fase.robo.r, c: fase.robo.c, dir: fase.robo.dir };
+  renderizarGrade();
+
+  const caminhoPercorrido = [];
+  let erro = null;
+
+  for (let i = 0; i < comandos.length; i++) {
+    const cmd = comandos[i];
+
+    // Atualizar highlight na fila
+    document.querySelectorAll('.cmd-tag').forEach((t, j) => {
+      t.style.background = j === i ? 'rgba(52,152,219,.45)' : '';
+      t.style.borderColor = j === i ? 'var(--azul)' : '';
+      t.style.transform = j === i ? 'scale(1.08)' : '';
+    });
+
+    await esperar(420);
+
+    if (cmd.label === 'FRENTE') {
+      const delta = DIR_DELTA[roboPos.dir];
+      const nr = roboPos.r + delta.dr;
+      const nc = roboPos.c + delta.dc;
+
+      // Verificar limites
+      if (nr < 0 || nr >= fase.rows || nc < 0 || nc >= fase.cols) {
+        erro = { r: roboPos.r, c: roboPos.c };
+        renderizarGrade(caminhoPercorrido, erro);
+        await esperar(300);
+        mostrarErro(`💥 O robô tentou sair do mapa no passo ${i+1}! Verifique a direção.`);
+        break;
+      }
+
+      // Verificar parede
+      if (fase.mapa[nr][nc] === 1) {
+        erro = { r: nr, c: nc };
+        renderizarGrade(caminhoPercorrido, erro);
+        await esperar(300);
+        mostrarErro(`🧱 O robô bateu em uma parede no passo ${i+1}! Mude o caminho.`);
+        break;
+      }
+
+      caminhoPercorrido.push({ r: roboPos.r, c: roboPos.c });
+      roboPos.r = nr;
+      roboPos.c = nc;
+
+    } else if (cmd.label === 'ESQ') {
+      roboPos.dir = VIRAR_ESQ[roboPos.dir];
+    } else if (cmd.label === 'DIR') {
+      roboPos.dir = VIRAR_DIR[roboPos.dir];
+    }
+
+    renderizarGrade(caminhoPercorrido);
+    tocarSomPasso();
+
+    // Verificar chegada
+    if (roboPos.r === fase.cafe.r &amp;&amp; roboPos.c === fase.cafe.c) {
+      await esperar(300);
+      mostrarSucesso();
+      break;
+    }
+  }
+
+  // Limpar highlight da fila
+  document.querySelectorAll('.cmd-tag').forEach(t => {
+    t.style.background = '';
+    t.style.borderColor = '';
+    t.style.transform = '';
+  });
+
+  if (!erro &amp;&amp; !(roboPos.r === fase.cafe.r &amp;&amp; roboPos.c === fase.cafe.c)) {
+    mostrarErro(`🤔 O robô parou antes de chegar ao café! Adicione mais comandos. ${FASES[faseAtual].dica ? '<br><small>💡 Dica: ' + FASES[faseAtual].dica + '</small>' : ''}`);
+  }
+
+  executando = false;
+  document.getElementById('btnRodar').disabled = false;
+  document.querySelector('.wrapper').classList.remove('executando');
+}
+
+function esperar(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+// ═══════════════════════════════════════
+// FEEDBACK
+// ═══════════════════════════════════════
+function mostrarSucesso() {
+  const msgDiv = document.getElementById('statusMsg');
+  msgDiv.className = 'status-msg sucesso';
+  const proxFase = faseAtual < FASES.length - 1;
+  msgDiv.innerHTML = `🎉 <strong>Parabéns! O robô chegou ao café!</strong><br>${proxFase ? `Você completou a ${FASES[faseAtual].nome}!` : '🏆 Você completou TODAS as fases!'} `;
+  if (proxFase) {
+    msgDiv.innerHTML += `<br><button onclick=&quot;selecionarFase(${faseAtual+1})&quot; style=&quot;margin-top:10px;padding:8px 20px;background:var(--verde);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>Próxima Fase →</button>`;
+  }
+
+  tocarSomAcerto();
+  lancarConfete();
+  mostrarFeedback('☕ Robô chegou!', '#2ECC71');
+}
+
+function mostrarErro(msg) {
+  const msgDiv = document.getElementById('statusMsg');
+  msgDiv.className = 'status-msg erro';
+  msgDiv.innerHTML = msg;
+  tocarSomErro();
+}
+
+function esconderStatus() {
+  document.getElementById('statusMsg').className = 'status-msg';
+}
+
+function mostrarFeedback(msg, cor) {
+  const fb = document.getElementById('feedbackFloat');
+  fb.textContent = msg;
+  fb.style.background = cor;
+  fb.style.boxShadow = `0 4px 30px ${cor}66`;
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════════════
+// SONS
+// ═══════════════════════════════════════
+function tocarSomPasso() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 400 + Math.random() * 100;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
+  } catch(e){}
+}
+
+function tocarSomAcerto() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523,659,784,1046].forEach((f,i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = f; osc.type = 'sine';
+      const t = ctx.currentTime + i*0.12;
+      gain.gain.setValueAtTime(0.28, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t+0.3);
+      osc.start(t); osc.stop(t+0.35);
+    });
+  } catch(e){}
+}
+
+function tocarSomErro() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 220; osc.type = 'sawtooth';
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════
+// CONFETE
+// ═══════════════════════════════════════
+function lancarConfete() {
+  const cont = document.getElementById('confettiContainer');
+  cont.innerHTML = '';
+  const cores = ['#3498DB','#2ECC71','#F1C40F','#E74C3C','#9B59B6','#FF6B35'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:-20px;
+      background:${cores[Math.floor(Math.random()*cores.length)]};
+      transform:rotate(${Math.random()*360}deg);
+      animation: cadaConf ${1.2+Math.random()*1.5}s ease forwards;
+      animation-delay: ${Math.random()*0.5}s;
+    `;
+    cont.appendChild(el);
+  }
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes cadaConf {
+      0%{ opacity:1; transform:translateY(0) rotate(0deg); }
+      100%{ opacity:0; transform:translateY(${60+Math.random()*40}vh) rotate(${360+Math.random()*360}deg); }
+    }
+  `;
+  document.head.appendChild(style);
+  setTimeout(() => { cont.innerHTML = ''; }, 3000);
+}
+
+init();
+
+</script>
+</body>
+</html>" 
+              frameborder="0" 
+              id="iframe-jogo3"
+              style="width:100%;height:100%;border:none;"
+              allowfullscreen>
+      </iframe>
+    </div>
+    <div class="game-panel" id="panel-jogo4" style="display:none">
+      <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap');
+
+:root {
+  --wa: #25D366;
+  --wa-dark: #128C7E;
+  --bg: #0d1b2a;
+  --card: #1b2c3e;
+  --card2: #243447;
+  --vermelho: #E74C3C;
+  --amarelo: #F1C40F;
+  --cinza: rgba(255,255,255,.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  min-height:100vh;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+
+
+/* ── TOPO ── */
+.topo {
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 20px 10px;
+  max-width:700px; margin:0 auto;
+  flex-wrap:wrap; gap:10px;
+}
+
+.voltar {
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.8); padding:8px 18px; border-radius:30px;
+  text-decoration:none; font-weight:700; font-size:.9rem; transition:all .2s;
+}
+.voltar:hover { background:rgba(255,255,255,.2); }
+
+.titulo-bloco { text-align:center; flex:1; }
+
+.titulo-jogo {
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.6rem,5vw,2.3rem);
+  color:var(--wa);
+  text-shadow:0 0 30px rgba(37,211,102,.4);
+}
+
+.subtitulo { color:rgba(255,255,255,.45); font-size:.88rem; margin-top:2px; }
+
+/* Cronômetro */
+.cronometro-box {
+  background:rgba(37,211,102,.12);
+  border:1px solid rgba(37,211,102,.3);
+  border-radius:16px;
+  padding:8px 18px;
+  text-align:center;
+  min-width:90px;
+}
+
+.cron-label { font-size:.68rem; color:rgba(255,255,255,.4); font-weight:800; letter-spacing:1px; text-transform:uppercase; }
+.cron-num {
+  font-family:'Fredoka One',cursive;
+  font-size:1.8rem; line-height:1;
+  color:var(--wa);
+  transition:color .3s;
+}
+.cron-num.urgente { color:var(--vermelho) !important; animation:pisca .5s ease infinite; }
+
+@keyframes pisca { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── WRAPPER ── */
+.wrapper {
+  max-width:700px; margin:0 auto;
+  padding:0 16px 40px;
+  position:relative; z-index:1;
+}
+
+/* Modo seleção */
+.modo-bar {
+  display:flex; gap:10px; margin-bottom:20px;
+}
+
+.modo-btn {
+  flex:1; padding:11px;
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.5);
+  font-family:'Fredoka One',cursive; font-size:1rem;
+  cursor:pointer; transition:all .2s;
+}
+
+.modo-btn.ativo {
+  background:rgba(37,211,102,.15);
+  border-color:var(--wa);
+  color:var(--wa);
+}
+
+.modo-btn:hover:not(.ativo) { background:rgba(255,255,255,.08); }
+
+/* Instrução */
+.instrucao {
+  background:rgba(37,211,102,.08);
+  border:1px solid rgba(37,211,102,.2);
+  border-radius:14px;
+  padding:14px 18px;
+  font-size:.95rem; font-weight:600;
+  color:rgba(255,255,255,.75);
+  margin-bottom:22px;
+  text-align:center;
+  line-height:1.5;
+}
+
+.instrucao span { color:var(--wa); }
+
+/* Progresso */
+.progresso-linha {
+  display:flex; align-items:center; gap:12px; margin-bottom:20px;
+}
+
+.prog-barra {
+  flex:1; height:8px;
+  background:rgba(255,255,255,.07);
+  border-radius:10px; overflow:hidden;
+}
+
+.prog-fill {
+  height:100%; background:var(--wa);
+  border-radius:10px; transition:width .5s ease;
+}
+
+.prog-label {
+  font-size:.78rem; color:rgba(255,255,255,.35);
+  font-weight:700; white-space:nowrap;
+}
+
+/* Pontos */
+.pontos-bar {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:20px;
+}
+
+.pontos-display {
+  display:flex; align-items:center; gap:10px;
+}
+
+.pontos-label { font-size:.78rem; color:rgba(255,255,255,.4); font-weight:700; }
+
+.pontos-num {
+  font-family:'Fredoka One',cursive; font-size:1.6rem; color:var(--amarelo);
+  transition:transform .2s;
+}
+.pontos-num.bump { animation:bump .3s ease; }
+
+@keyframes bump { 50%{ transform:scale(1.35); } }
+
+.rodada-badge {
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.5);
+  padding:5px 14px; border-radius:20px;
+  font-family:'Fredoka One',cursive; font-size:.88rem;
+}
+
+/* ── ZONA DE JOGO ── */
+.zonas-container {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-bottom:20px;
+}
+
+@media(max-width:480px){ .zonas-container{ grid-template-columns:1fr; } }
+
+.zona-label {
+  font-family:'Fredoka One',cursive;
+  font-size:1rem; color:rgba(255,255,255,.45);
+  text-align:center; margin-bottom:10px; letter-spacing:.3px;
+}
+
+/* Cards arrastáveis */
+.zona-bagunca {
+  background:var(--card);
+  border-radius:20px;
+  padding:16px;
+  border:2px solid rgba(255,255,255,.07);
+  min-height:280px;
+}
+
+.zona-resposta {
+  background:var(--card);
+  border-radius:20px;
+  padding:12px;
+  border:2px dashed rgba(37,211,102,.25);
+  min-height:280px;
+  transition:border-color .2s, background .2s;
+}
+
+.zona-resposta.drag-ativo {
+  border-color:var(--wa);
+  background:rgba(37,211,102,.06);
+}
+
+/* Card de passo */
+.passo-card {
+  background:var(--card2);
+  border:2px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  cursor:grab;
+  transition:all .2s;
+  display:flex; align-items:center; gap:12px;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.passo-card:last-child { margin-bottom:0; }
+.passo-card:active { cursor:grabbing; }
+
+.passo-card.dragging {
+  opacity:.35;
+  transform:rotate(2deg);
+}
+
+.passo-card:hover:not(.dragging) {
+  border-color:rgba(37,211,102,.4);
+  transform:translateX(3px);
+}
+
+.passo-card.no-slot {
+  cursor:default;
+  border-color:rgba(37,211,102,.3);
+  background:rgba(37,211,102,.06);
+}
+
+.passo-icon { font-size:1.8rem; flex-shrink:0; }
+
+.passo-texto {
+  font-weight:700; font-size:.92rem; line-height:1.3; flex:1;
+}
+
+.passo-handle { color:rgba(255,255,255,.2); font-size:1rem; flex-shrink:0; }
+
+/* Slots de resposta */
+.slot-resposta {
+  background:rgba(255,255,255,.03);
+  border:2px dashed rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:12px 14px;
+  margin-bottom:10px;
+  min-height:64px;
+  display:flex; align-items:center; gap:10px;
+  transition:all .2s;
+}
+
+.slot-resposta:last-child { margin-bottom:0; }
+
+.slot-resposta.drag-over {
+  border-color:var(--wa);
+  background:rgba(37,211,102,.1);
+  transform:scale(1.01);
+}
+
+.slot-resposta.correto {
+  border-color:var(--wa) !important;
+  background:rgba(37,211,102,.15) !important;
+  border-style:solid;
+  animation:flashVerde .4s ease;
+}
+
+.slot-resposta.errado {
+  border-color:var(--vermelho) !important;
+  background:rgba(231,76,60,.1) !important;
+  animation:tremor .4s ease;
+}
+
+@keyframes flashVerde { 0%{ background:rgba(37,211,102,.35); } 100%{ background:rgba(37,211,102,.15); } }
+@keyframes tremor { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+
+.slot-num {
+  font-family:'Fredoka One',cursive;
+  font-size:1.1rem; color:rgba(255,255,255,.2);
+  min-width:24px;
+}
+
+.slot-placeholder {
+  color:rgba(255,255,255,.2);
+  font-size:.82rem; font-style:italic;
+}
+
+/* Botões de ação */
+.acoes-row {
+  display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap;
+}
+
+.btn-acao {
+  flex:1; min-width:120px;
+  padding:14px;
+  border:none; border-radius:14px;
+  font-family:'Fredoka One',cursive; font-size:1rem;
+  cursor:pointer; transition:all .2s;
+}
+
+.btn-verificar {
+  background:var(--wa);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(37,211,102,.35);
+}
+.btn-verificar:hover { transform:scale(1.03); filter:brightness(1.1); }
+
+.btn-reiniciar {
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.15);
+}
+.btn-reiniciar:hover { background:rgba(255,255,255,.15); }
+
+/* Mensagem resultado */
+.resultado-msg {
+  border-radius:16px; padding:16px 20px;
+  display:none; animation:aparecer .4s ease;
+  font-weight:700; line-height:1.5;
+}
+
+@keyframes aparecer { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+
+.resultado-msg.acerto {
+  background:rgba(37,211,102,.12);
+  border:1px solid rgba(37,211,102,.3);
+  color:var(--wa);
+  display:block;
+}
+
+.resultado-msg.parcial {
+  background:rgba(241,196,15,.1);
+  border:1px solid rgba(241,196,15,.3);
+  color:var(--amarelo);
+  display:block;
+}
+
+/* Tela final */
+.tela-final {
+  display:none;
+  background:var(--card);
+  border-radius:24px;
+  padding:36px 28px;
+  text-align:center;
+  border:2px solid var(--wa);
+  box-shadow:0 0 40px rgba(37,211,102,.2);
+  animation:aparecer .5s ease;
+}
+
+.tela-final .big-emoji { font-size:72px; display:block; margin-bottom:12px; }
+.tela-final h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--wa); margin-bottom:10px; }
+.tela-final .pts-final { font-family:'Fredoka One',cursive; font-size:3rem; color:var(--amarelo); }
+.tela-final .sub-final { color:rgba(255,255,255,.5); font-size:.95rem; margin-top:8px; }
+.tela-final .tempo-final { margin-top:12px; font-size:.9rem; color:rgba(255,255,255,.4); }
+
+.btn-novo-jogo {
+  margin-top:22px;
+  padding:14px 40px;
+  background:var(--wa);
+  border:none; border-radius:50px;
+  color:#fff; font-family:'Fredoka One',cursive; font-size:1.1rem;
+  cursor:pointer; transition:all .2s;
+  box-shadow:0 4px 20px rgba(37,211,102,.4);
+}
+.btn-novo-jogo:hover { transform:scale(1.05); }
+
+/* Feedback float */
+.feedback-float {
+  position:fixed; top:18%; left:50%;
+  transform:translateX(-50%) translateY(-15px);
+  padding:13px 26px; border-radius:50px;
+  font-family:'Fredoka One',cursive; font-size:1.15rem; color:#fff;
+  z-index:1000; pointer-events:none; opacity:0; transition:all .3s;
+  white-space:nowrap;
+}
+.feedback-float.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Confete */
+.conf { position:fixed; width:10px; height:10px; border-radius:2px; pointer-events:none; z-index:999; }
+
+</style>
+</head>
+<body>
+<div class=&quot;topo&quot;>
+  
+  <div class=&quot;titulo-bloco&quot;>
+    <div class=&quot;titulo-jogo&quot;>📱 Sequência do WhatsApp</div>
+    <p class=&quot;subtitulo&quot;>Organize os passos na ordem certa!</p>
+  </div>
+  <div class=&quot;cronometro-box&quot;>
+    <div class=&quot;cron-label&quot;>Tempo</div>
+    <div class=&quot;cron-num&quot; id=&quot;cronNum&quot;>--</div>
+  </div>
+</div>
+
+<div class=&quot;wrapper&quot;>
+
+  <!-- Seletor de modo -->
+  <div class=&quot;modo-bar&quot;>
+    <button class=&quot;modo-btn ativo&quot; id=&quot;btnFacil&quot; onclick=&quot;definirModo('facil')&quot;>😊 Fácil</button>
+    <button class=&quot;modo-btn&quot; id=&quot;btnDificil&quot; onclick=&quot;definirModo('dificil')&quot;>🔥 Difícil</button>
+  </div>
+
+  <div class=&quot;instrucao&quot; id=&quot;instrucaoDiv&quot;>
+    <span>👆 Arraste</span> os passos para a coluna da direita na <span>ordem correta</span> para enviar uma mensagem!
+  </div>
+
+  <!-- Pontuação e rodada -->
+  <div class=&quot;pontos-bar&quot;>
+    <div class=&quot;pontos-display&quot;>
+      <span class=&quot;pontos-label&quot;>⭐ Pontos:</span>
+      <span class=&quot;pontos-num&quot; id=&quot;pontosNum&quot;>0</span>
+    </div>
+    <div class=&quot;rodada-badge&quot; id=&quot;rodadaBadge&quot;>Rodada 1 / 3</div>
+  </div>
+
+  <!-- Barra de progresso -->
+  <div class=&quot;progresso-linha&quot;>
+    <div class=&quot;prog-barra&quot;><div class=&quot;prog-fill&quot; id=&quot;progFill&quot; style=&quot;width:0%&quot;></div></div>
+    <span class=&quot;prog-label&quot; id=&quot;progLabel&quot;>0 de 4</span>
+  </div>
+
+  <!-- Jogo principal -->
+  <div id=&quot;jogoDiv&quot;>
+    <div class=&quot;zonas-container&quot;>
+      <!-- Bagunça -->
+      <div>
+        <div class=&quot;zona-label&quot;>📋 Passos (embaralhados)</div>
+        <div class=&quot;zona-bagunca&quot; id=&quot;zonaOrigem&quot;
+             ondragover=&quot;ev(event)&quot; ondrop=&quot;dropZona(event,'origem')&quot; ondragleave=&quot;dlv(event)&quot;>
+        </div>
+      </div>
+
+      <!-- Resposta -->
+      <div>
+        <div class=&quot;zona-label&quot;>✅ Ordem correta</div>
+        <div class=&quot;zona-resposta&quot; id=&quot;zonaResposta&quot;
+             ondragover=&quot;ev(event,true)&quot; ondrop=&quot;dropZona(event,'resposta')&quot; ondragleave=&quot;dlv(event)&quot;>
+        </div>
+      </div>
+    </div>
+
+    <div class=&quot;acoes-row&quot;>
+      <button class=&quot;btn-acao btn-verificar&quot; onclick=&quot;verificar()&quot;>✔ Verificar</button>
+      <button class=&quot;btn-acao btn-reiniciar&quot; onclick=&quot;reiniciarRodada()&quot;>🔄 Reiniciar</button>
+    </div>
+
+    <div class=&quot;resultado-msg&quot; id=&quot;resultadoMsg&quot;></div>
+  </div>
+
+  <!-- Tela final -->
+  <div class=&quot;tela-final&quot; id=&quot;telaFinal&quot;>
+    <span class=&quot;big-emoji&quot; id=&quot;emojiFinal&quot;>🏆</span>
+    <h2 id=&quot;h2Final&quot;>Incrível!</h2>
+    <div class=&quot;pts-final&quot; id=&quot;ptsFinal&quot;>0</div>
+    <div class=&quot;sub-final&quot; id=&quot;subFinal&quot;>Você completou todos os desafios!</div>
+    <div class=&quot;tempo-final&quot; id=&quot;tempoFinal&quot;></div>
+    <button class=&quot;btn-novo-jogo&quot; onclick=&quot;iniciarJogo()&quot;>🔄 Jogar Novamente</button>
+  </div>
+
+</div>
+
+<div class=&quot;feedback-float&quot; id=&quot;feedbackFloat&quot;></div>
+
+<script>
+// ══════════════════════════════════
+// CONFIGURAÇÃO
+// ══════════════════════════════════
+const TOTAL_RODADAS = 3;
+
+// Desafios com passos embaralhados em cada rodada
+const DESAFIOS = [
+  {
+    titulo:'Mensagem Simples',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'👤', texto:'Escolher o contato', ordemCorreta:1 },
+      { id:2, icon:'⌨️', texto:'Escrever a mensagem', ordemCorreta:2 },
+      { id:3, icon:'📤', texto:'Clicar em Enviar', ordemCorreta:3 },
+    ]
+  },
+  {
+    titulo:'Mensagem com Foto',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'👤', texto:'Selecionar o contato', ordemCorreta:1 },
+      { id:2, icon:'📎', texto:'Tocar no ícone de anexar', ordemCorreta:2 },
+      { id:3, icon:'🖼️', texto:'Escolher a foto da galeria', ordemCorreta:3 },
+      { id:4, icon:'✍️', texto:'Escrever uma legenda (opcional)', ordemCorreta:4 },
+      { id:5, icon:'📤', texto:'Tocar em Enviar', ordemCorreta:5 },
+    ]
+  },
+  {
+    titulo:'Criar Grupo',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'⋮', texto:'Tocar nos três pontos (menu)', ordemCorreta:1 },
+      { id:2, icon:'👥', texto:'Selecionar &quot;Novo Grupo&quot;', ordemCorreta:2 },
+      { id:3, icon:'➕', texto:'Adicionar os participantes', ordemCorreta:3 },
+      { id:4, icon:'✍️', texto:'Digitar o nome do grupo', ordemCorreta:4 },
+      { id:5, icon:'✅', texto:'Tocar em &quot;Criar&quot;', ordemCorreta:5 },
+    ]
+  },
+];
+
+// Modo fácil: 4 passos; Difícil: até 6 passos + cronômetro
+let modo = 'facil';
+let rodada = 0;
+let pontos = 0;
+let slotContents = [];
+let draggedId = null;
+let dragSource = null;
+let cronTimer = null;
+let cronSegundos = 0;
+let cronAtivo = false;
+let totalSegundosGasto = 0;
+
+// ══════════════════════════════════
+// MODO
+// ══════════════════════════════════
+function definirModo(m) {
+  modo = m;
+  document.getElementById('btnFacil').classList.toggle('ativo', m==='facil');
+  document.getElementById('btnDificil').classList.toggle('ativo', m==='dificil');
+
+  const instrucao = document.getElementById('instrucaoDiv');
+  if (m === 'dificil') {
+    instrucao.innerHTML = `<span>🔥 Modo Difícil:</span> Mais passos + cronômetro correndo! Organize tudo na <span>ordem correta</span> o mais rápido possível!`;
+  } else {
+    instrucao.innerHTML = `<span>👆 Arraste</span> os passos para a coluna da direita na <span>ordem correta</span> para enviar uma mensagem!`;
+  }
+
+  iniciarJogo();
+}
+
+// ══════════════════════════════════
+// JOGO
+// ══════════════════════════════════
+function iniciarJogo() {
+  rodada = 0;
+  pontos = 0;
+  totalSegundosGasto = 0;
+  document.getElementById('pontosNum').textContent = '0';
+  document.getElementById('telaFinal').style.display = 'none';
+  document.getElementById('jogoDiv').style.display = 'block';
+  pararCron();
+  carregarRodada();
+}
+
+function carregarRodada() {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+
+  slotContents = new Array(passos.length).fill(null);
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  document.getElementById('rodadaBadge').textContent = `Rodada ${rodada+1} / ${TOTAL_RODADAS}`;
+  atualizarProgresso(0, passos.length);
+
+  renderizarZonas(passos);
+
+  if (modo === 'dificil') {
+    iniciarCron();
+  } else {
+    pararCron();
+    document.getElementById('cronNum').textContent = '--';
+  }
+}
+
+function getDesafio() {
+  return DESAFIOS[rodada % DESAFIOS.length];
+}
+
+function filtrarPassos(passos) {
+  if (modo === 'facil') return passos.slice(0, 4);
+  return passos;
+}
+
+function embaralhar(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ══════════════════════════════════
+// RENDERIZAR
+// ══════════════════════════════════
+function renderizarZonas(passos) {
+  const embaralhados = embaralhar([...passos]);
+  const zonaOrigem = document.getElementById('zonaOrigem');
+  zonaOrigem.innerHTML = '';
+
+  embaralhados.forEach(p => {
+    zonaOrigem.appendChild(criarCard(p));
+  });
+
+  const zonaResposta = document.getElementById('zonaResposta');
+  zonaResposta.innerHTML = '';
+  passos.forEach((_, i) => {
+    zonaResposta.appendChild(criarSlot(i, passos.length));
+  });
+}
+
+function criarCard(passo) {
+  const div = document.createElement('div');
+  div.className = 'passo-card';
+  div.id = 'card-' + passo.id;
+  div.draggable = true;
+  div.innerHTML = `
+    <span class=&quot;passo-icon&quot;>${passo.icon}</span>
+    <span class=&quot;passo-texto&quot;>${passo.texto}</span>
+    <span class=&quot;passo-handle&quot;>⠿</span>
+  `;
+
+  // Drag events
+  div.addEventListener('dragstart', e => {
+    draggedId = passo.id;
+    dragSource = 'origem';
+    setTimeout(() => div.classList.add('dragging'), 0);
+  });
+  div.addEventListener('dragend', () => div.classList.remove('dragging'));
+
+  // Touch events
+  div.addEventListener('touchstart', touchStart, {passive:true});
+  div.addEventListener('touchmove', touchMove, {passive:false});
+  div.addEventListener('touchend', touchEnd);
+
+  return div;
+}
+
+function criarSlot(pos, total) {
+  const div = document.createElement('div');
+  div.className = 'slot-resposta';
+  div.id = 'slot-' + pos;
+  div.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;slot-placeholder&quot;>Solte aqui o ${pos+1}º passo...</span>
+  `;
+  div.ondragover = e => { e.preventDefault(); div.classList.add('drag-over'); };
+  div.ondragleave = () => div.classList.remove('drag-over');
+  div.ondrop = e => dropSlot(e, pos);
+  return div;
+}
+
+function preencherSlot(pos, passoId) {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  const passo = passos.find(p => p.id === passoId);
+  if (!passo) return;
+
+  const slot = document.getElementById('slot-' + pos);
+  slot.className = 'slot-resposta preenchido';
+  slot.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;passo-icon&quot;>${passo.icon}</span>
+    <span class=&quot;passo-texto&quot; style=&quot;font-weight:700;font-size:.9rem&quot;>${passo.texto}</span>
+  `;
+  slot.draggable = true;
+  slot.ondragstart = e => { draggedId = passoId; dragSource = 'slot-' + pos; };
+  slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+  slot.ondragleave = () => slot.classList.remove('drag-over');
+  slot.ondrop = e => dropSlot(e, pos);
+
+  slotContents[pos] = passoId;
+  atualizarProgresso(slotContents.filter(s=>s!==null).length, passos.length);
+}
+
+function limparSlot(pos, total) {
+  const slot = document.getElementById('slot-' + pos);
+  slot.className = 'slot-resposta';
+  slot.draggable = false;
+  slot.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;slot-placeholder&quot;>Solte aqui o ${pos+1}º passo...</span>
+  `;
+  slot.ondragstart = null;
+  slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+  slot.ondragleave = () => slot.classList.remove('drag-over');
+  slot.ondrop = e => dropSlot(e, pos);
+  slotContents[pos] = null;
+
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  atualizarProgresso(slotContents.filter(s=>s!==null).length, passos.length);
+}
+
+// ══════════════════════════════════
+// DRAG &amp; DROP
+// ══════════════════════════════════
+function ev(e, isSlot=false) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-ativo');
+}
+
+function dlv(e) { e.currentTarget.classList.remove('drag-ativo','drag-over'); }
+
+function dropZona(e, zona) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-ativo');
+  if (!draggedId &amp;&amp; draggedId !== 0) return;
+
+  if (zona === 'origem') {
+    // Devolver para origem
+    if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const pos = parseInt(dragSource.split('-')[1]);
+      const desafio = getDesafio();
+      const passos = filtrarPassos(desafio.passos);
+      limparSlot(pos, passos.length);
+      if (!document.getElementById('card-' + draggedId)) {
+        const passo = passos.find(p => p.id === draggedId);
+        if (passo) document.getElementById('zonaOrigem').appendChild(criarCard(passo));
+      }
+    }
+    draggedId = null; dragSource = null;
+  }
+}
+
+function dropSlot(e, pos) {
+  e.preventDefault(); e.stopPropagation();
+  const slot = document.getElementById('slot-' + pos);
+  slot.classList.remove('drag-over');
+  if (!draggedId &amp;&amp; draggedId !== 0) return;
+
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  const anteriorNeste = slotContents[pos];
+
+  if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+    const sourcePos = parseInt(dragSource.split('-')[1]);
+    if (anteriorNeste !== null) {
+      preencherSlot(sourcePos, anteriorNeste);
+    } else {
+      limparSlot(sourcePos, passos.length);
+    }
+  } else {
+    // Vem da origem
+    const el = document.getElementById('card-' + draggedId);
+    if (el) el.remove();
+    if (anteriorNeste !== null) {
+      const p = passos.find(pp => pp.id === anteriorNeste);
+      if (p) document.getElementById('zonaOrigem').appendChild(criarCard(p));
+    }
+  }
+
+  preencherSlot(pos, draggedId);
+  draggedId = null; dragSource = null;
+}
+
+// ══════════════════════════════════
+// TOUCH DRAG (mobile)
+// ══════════════════════════════════
+let touchData = { el:null, clone:null, offsetX:0, offsetY:0, origParent:null };
+
+function touchStart(e) {
+  const card = e.currentTarget;
+  const t = e.touches[0];
+  const rect = card.getBoundingClientRect();
+
+  touchData.el = card;
+  touchData.offsetX = t.clientX - rect.left;
+  touchData.offsetY = t.clientY - rect.top;
+
+  // Clone flutuante
+  const clone = card.cloneNode(true);
+  clone.style.cssText = `
+    position:fixed; z-index:9999; opacity:.85; pointer-events:none;
+    width:${rect.width}px; left:${t.clientX - touchData.offsetX}px;
+    top:${t.clientY - touchData.offsetY}px;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+    transition:none;
+  `;
+  document.body.appendChild(clone);
+  touchData.clone = clone;
+  card.style.opacity = '.3';
+
+  // Descobrir o id
+  const id = parseInt(card.id.replace('card-',''));
+  if (!isNaN(id)) {
+    draggedId = id;
+    dragSource = 'origem';
+  } else {
+    // Vem de um slot
+    const slotEl = card.closest('.slot-resposta');
+    if (slotEl) {
+      const pos = parseInt(slotEl.id.replace('slot-',''));
+      draggedId = slotContents[pos];
+      dragSource = 'slot-' + pos;
+    }
+  }
+}
+
+function touchMove(e) {
+  e.preventDefault();
+  if (!touchData.clone) return;
+  const t = e.touches[0];
+  touchData.clone.style.left = (t.clientX - touchData.offsetX) + 'px';
+  touchData.clone.style.top = (t.clientY - touchData.offsetY) + 'px';
+}
+
+function touchEnd(e) {
+  if (!touchData.clone) return;
+  touchData.clone.remove();
+  touchData.clone = null;
+  if (touchData.el) touchData.el.style.opacity = '';
+
+  const t = e.changedTouches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+
+  // Encontrar slot alvo
+  const slot = el ? el.closest('.slot-resposta') : null;
+  if (slot) {
+    const pos = parseInt(slot.id.replace('slot-',''));
+    if (!isNaN(pos)) {
+      const fakeEv = { preventDefault:()=>{}, stopPropagation:()=>{}, currentTarget:slot };
+      dropSlot(fakeEv, pos);
+    }
+  } else {
+    const zona = el ? el.closest('.zona-bagunca') : null;
+    if (zona &amp;&amp; dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const pos = parseInt(dragSource.split('-')[1]);
+      const desafio = getDesafio();
+      const passos = filtrarPassos(desafio.passos);
+      const pid = slotContents[pos];
+      limparSlot(pos, passos.length);
+      if (pid !== null) {
+        const p = passos.find(pp => pp.id === pid);
+        if (p) document.getElementById('zonaOrigem').appendChild(criarCard(p));
+      }
+    }
+  }
+
+  draggedId = null; dragSource = null; touchData.el = null;
+}
+
+// ══════════════════════════════════
+// VERIFICAR
+// ══════════════════════════════════
+function verificar() {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+
+  if (slotContents.some(s => s === null)) {
+    mostrarFeedbackFloat('⚠️ Coloque todos os passos primeiro!', '#F39C12');
+    return;
+  }
+
+  let acertos = 0;
+  slotContents.forEach((id, pos) => {
+    const slot = document.getElementById('slot-' + pos);
+    const passo = passos.find(p => p.id === id);
+    if (passo &amp;&amp; passo.ordemCorreta === pos) {
+      acertos++;
+      slot.classList.remove('errado');
+      slot.classList.add('correto');
+    } else {
+      slot.classList.remove('correto');
+      slot.classList.add('errado');
+    }
+  });
+
+  if (acertos === passos.length) {
+    // Calcular pontos: base + bônus de tempo
+    let ganhou = 30;
+    if (modo === 'dificil') {
+      const bonus = Math.max(0, 60 - cronSegundos) * 2;
+      ganhou = 30 + bonus;
+      totalSegundosGasto += cronSegundos;
+      pararCron();
+    }
+
+    pontos += ganhou;
+    document.getElementById('pontosNum').textContent = pontos;
+    document.getElementById('pontosNum').classList.add('bump');
+    setTimeout(() => document.getElementById('pontosNum').classList.remove('bump'), 400);
+
+    tocarSom(true);
+    mostrarFeedbackFloat('🎉 Perfeito!', '#25D366');
+    lancarConfete();
+
+    const msgDiv = document.getElementById('resultadoMsg');
+    msgDiv.className = 'resultado-msg acerto';
+    msgDiv.innerHTML = `✅ <strong>Perfeito! ${ganhou} pontos!</strong>${modo==='dificil' ? ` (bônus de tempo incluído)` : ''}<br>
+      ${rodada < TOTAL_RODADAS-1 ? `<button onclick=&quot;avancarRodada()&quot; style=&quot;margin-top:10px;padding:8px 22px;background:var(--wa);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>Próximo Desafio →</button>` : `<button onclick=&quot;mostrarFinal()&quot; style=&quot;margin-top:10px;padding:8px 22px;background:var(--wa);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>🏆 Ver Resultado</button>`}
+    `;
+  } else {
+    tocarSom(false);
+    mostrarFeedbackFloat(`🤔 ${acertos} de ${passos.length} corretos`, '#E74C3C');
+    const msgDiv = document.getElementById('resultadoMsg');
+    msgDiv.className = 'resultado-msg parcial';
+    msgDiv.innerHTML = `⚠️ <strong>${acertos} de ${passos.length} passos corretos.</strong> Os itens em vermelho estão na posição errada. Tente de novo!`;
+  }
+}
+
+function avancarRodada() {
+  rodada++;
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  carregarRodada();
+}
+
+function reiniciarRodada() {
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  pararCron();
+  carregarRodada();
+}
+
+// ══════════════════════════════════
+// FINAL
+// ══════════════════════════════════
+function mostrarFinal() {
+  pararCron();
+  document.getElementById('jogoDiv').style.display = 'none';
+  const final = document.getElementById('telaFinal');
+  final.style.display = 'block';
+
+  document.getElementById('ptsFinal').textContent = pontos;
+  const max = TOTAL_RODADAS * (modo === 'dificil' ? 150 : 30);
+  const pct = pontos / max;
+
+  let emoji = '🥉', titulo = 'Continue praticando!', sub = 'Você completou os desafios!';
+  if (pct === 1) { emoji='🏆'; titulo='Perfeito!'; sub='Pontuação máxima! Você domina o WhatsApp!'; }
+  else if (pct >= .7) { emoji='🥇'; titulo='Muito bem!'; sub='Você sabe enviar mensagens de forma eficiente!'; }
+  else if (pct >= .4) { emoji='🥈'; titulo='Bom trabalho!'; sub='Com mais prática você vai arrasar!'; }
+
+  document.getElementById('emojiFinal').textContent = emoji;
+  document.getElementById('h2Final').textContent = titulo;
+  document.getElementById('subFinal').textContent = sub;
+
+  if (modo === 'dificil' &amp;&amp; totalSegundosGasto > 0) {
+    document.getElementById('tempoFinal').textContent = `⏱ Tempo total: ${totalSegundosGasto}s`;
+  } else {
+    document.getElementById('tempoFinal').textContent = '';
+  }
+
+  tocarSom(true);
+}
+
+// ══════════════════════════════════
+// CRONÔMETRO
+// ══════════════════════════════════
+function iniciarCron() {
+  pararCron();
+  cronSegundos = 0;
+  cronAtivo = true;
+  const el = document.getElementById('cronNum');
+  el.className = 'cron-num';
+  el.textContent = '0';
+
+  cronTimer = setInterval(() => {
+    cronSegundos++;
+    el.textContent = cronSegundos;
+    if (cronSegundos >= 45) {
+      el.className = 'cron-num urgente';
+    }
+  }, 1000);
+}
+
+function pararCron() {
+  if (cronTimer) { clearInterval(cronTimer); cronTimer = null; }
+  cronAtivo = false;
+}
+
+// ══════════════════════════════════
+// PROGRESSO
+// ══════════════════════════════════
+function atualizarProgresso(qtd, total) {
+  const pct = total ? (qtd/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `${qtd} de ${total}`;
+}
+
+// ══════════════════════════════════
+// SOM &amp; CONFETE
+// ══════════════════════════════════
+function tocarSom(ok) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ok) {
+      [523,659,784,1047].forEach((f,i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = f; o.type = 'sine';
+        const t = ctx.currentTime + i*.12;
+        g.gain.setValueAtTime(.28, t);
+        g.gain.exponentialRampToValueAtTime(.001, t+.3);
+        o.start(t); o.stop(t+.35);
+      });
+    } else {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 200; o.type = 'sawtooth';
+      g.gain.setValueAtTime(.18, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+.4);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+.4);
+    }
+  } catch(e){}
+}
+
+function lancarConfete() {
+  const cores = ['#25D366','#128C7E','#F1C40F','#3498DB','#9B59B6','#FF6B35'];
+  for (let i = 0; i < 55; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.cssText = `
+      left:${Math.random()*100}vw; top:-20px;
+      background:${cores[Math.floor(Math.random()*cores.length)]};
+      transform:rotate(${Math.random()*360}deg);
+      animation:cadeConf ${1.2+Math.random()*1.5}s ease forwards;
+      animation-delay:${Math.random()*.4}s;
+    `;
+    document.body.appendChild(el);
+  }
+  const s = document.createElement('style');
+  s.textContent = `@keyframes cadeConf{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(80vh) rotate(720deg)}}`;
+  document.head.appendChild(s);
+  setTimeout(() => document.querySelectorAll('.conf').forEach(e=>e.remove()), 3000);
+}
+
+function mostrarFeedbackFloat(msg, cor) {
+  const fb = document.getElementById('feedbackFloat');
+  fb.textContent = msg;
+  fb.style.background = cor;
+  fb.style.boxShadow = `0 4px 30px ${cor}55`;
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2300);
+}
+
+// Iniciar
+iniciarJogo();
+</script>
+<script>
+
+// ══════════════════════════════════
+// CONFIGURAÇÃO
+// ══════════════════════════════════
+const TOTAL_RODADAS = 3;
+
+// Desafios com passos embaralhados em cada rodada
+const DESAFIOS = [
+  {
+    titulo:'Mensagem Simples',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'👤', texto:'Escolher o contato', ordemCorreta:1 },
+      { id:2, icon:'⌨️', texto:'Escrever a mensagem', ordemCorreta:2 },
+      { id:3, icon:'📤', texto:'Clicar em Enviar', ordemCorreta:3 },
+    ]
+  },
+  {
+    titulo:'Mensagem com Foto',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'👤', texto:'Selecionar o contato', ordemCorreta:1 },
+      { id:2, icon:'📎', texto:'Tocar no ícone de anexar', ordemCorreta:2 },
+      { id:3, icon:'🖼️', texto:'Escolher a foto da galeria', ordemCorreta:3 },
+      { id:4, icon:'✍️', texto:'Escrever uma legenda (opcional)', ordemCorreta:4 },
+      { id:5, icon:'📤', texto:'Tocar em Enviar', ordemCorreta:5 },
+    ]
+  },
+  {
+    titulo:'Criar Grupo',
+    passos:[
+      { id:0, icon:'📲', texto:'Abrir o WhatsApp', ordemCorreta:0 },
+      { id:1, icon:'⋮', texto:'Tocar nos três pontos (menu)', ordemCorreta:1 },
+      { id:2, icon:'👥', texto:'Selecionar &quot;Novo Grupo&quot;', ordemCorreta:2 },
+      { id:3, icon:'➕', texto:'Adicionar os participantes', ordemCorreta:3 },
+      { id:4, icon:'✍️', texto:'Digitar o nome do grupo', ordemCorreta:4 },
+      { id:5, icon:'✅', texto:'Tocar em &quot;Criar&quot;', ordemCorreta:5 },
+    ]
+  },
+];
+
+// Modo fácil: 4 passos; Difícil: até 6 passos + cronômetro
+let modo = 'facil';
+let rodada = 0;
+let pontos = 0;
+let slotContents = [];
+let draggedId = null;
+let dragSource = null;
+let cronTimer = null;
+let cronSegundos = 0;
+let cronAtivo = false;
+let totalSegundosGasto = 0;
+
+// ══════════════════════════════════
+// MODO
+// ══════════════════════════════════
+function definirModo(m) {
+  modo = m;
+  document.getElementById('btnFacil').classList.toggle('ativo', m==='facil');
+  document.getElementById('btnDificil').classList.toggle('ativo', m==='dificil');
+
+  const instrucao = document.getElementById('instrucaoDiv');
+  if (m === 'dificil') {
+    instrucao.innerHTML = `<span>🔥 Modo Difícil:</span> Mais passos + cronômetro correndo! Organize tudo na <span>ordem correta</span> o mais rápido possível!`;
+  } else {
+    instrucao.innerHTML = `<span>👆 Arraste</span> os passos para a coluna da direita na <span>ordem correta</span> para enviar uma mensagem!`;
+  }
+
+  iniciarJogo();
+}
+
+// ══════════════════════════════════
+// JOGO
+// ══════════════════════════════════
+function iniciarJogo() {
+  rodada = 0;
+  pontos = 0;
+  totalSegundosGasto = 0;
+  document.getElementById('pontosNum').textContent = '0';
+  document.getElementById('telaFinal').style.display = 'none';
+  document.getElementById('jogoDiv').style.display = 'block';
+  pararCron();
+  carregarRodada();
+}
+
+function carregarRodada() {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+
+  slotContents = new Array(passos.length).fill(null);
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  document.getElementById('rodadaBadge').textContent = `Rodada ${rodada+1} / ${TOTAL_RODADAS}`;
+  atualizarProgresso(0, passos.length);
+
+  renderizarZonas(passos);
+
+  if (modo === 'dificil') {
+    iniciarCron();
+  } else {
+    pararCron();
+    document.getElementById('cronNum').textContent = '--';
+  }
+}
+
+function getDesafio() {
+  return DESAFIOS[rodada % DESAFIOS.length];
+}
+
+function filtrarPassos(passos) {
+  if (modo === 'facil') return passos.slice(0, 4);
+  return passos;
+}
+
+function embaralhar(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ══════════════════════════════════
+// RENDERIZAR
+// ══════════════════════════════════
+function renderizarZonas(passos) {
+  const embaralhados = embaralhar([...passos]);
+  const zonaOrigem = document.getElementById('zonaOrigem');
+  zonaOrigem.innerHTML = '';
+
+  embaralhados.forEach(p => {
+    zonaOrigem.appendChild(criarCard(p));
+  });
+
+  const zonaResposta = document.getElementById('zonaResposta');
+  zonaResposta.innerHTML = '';
+  passos.forEach((_, i) => {
+    zonaResposta.appendChild(criarSlot(i, passos.length));
+  });
+}
+
+function criarCard(passo) {
+  const div = document.createElement('div');
+  div.className = 'passo-card';
+  div.id = 'card-' + passo.id;
+  div.draggable = true;
+  div.innerHTML = `
+    <span class=&quot;passo-icon&quot;>${passo.icon}</span>
+    <span class=&quot;passo-texto&quot;>${passo.texto}</span>
+    <span class=&quot;passo-handle&quot;>⠿</span>
+  `;
+
+  // Drag events
+  div.addEventListener('dragstart', e => {
+    draggedId = passo.id;
+    dragSource = 'origem';
+    setTimeout(() => div.classList.add('dragging'), 0);
+  });
+  div.addEventListener('dragend', () => div.classList.remove('dragging'));
+
+  // Touch events
+  div.addEventListener('touchstart', touchStart, {passive:true});
+  div.addEventListener('touchmove', touchMove, {passive:false});
+  div.addEventListener('touchend', touchEnd);
+
+  return div;
+}
+
+function criarSlot(pos, total) {
+  const div = document.createElement('div');
+  div.className = 'slot-resposta';
+  div.id = 'slot-' + pos;
+  div.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;slot-placeholder&quot;>Solte aqui o ${pos+1}º passo...</span>
+  `;
+  div.ondragover = e => { e.preventDefault(); div.classList.add('drag-over'); };
+  div.ondragleave = () => div.classList.remove('drag-over');
+  div.ondrop = e => dropSlot(e, pos);
+  return div;
+}
+
+function preencherSlot(pos, passoId) {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  const passo = passos.find(p => p.id === passoId);
+  if (!passo) return;
+
+  const slot = document.getElementById('slot-' + pos);
+  slot.className = 'slot-resposta preenchido';
+  slot.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;passo-icon&quot;>${passo.icon}</span>
+    <span class=&quot;passo-texto&quot; style=&quot;font-weight:700;font-size:.9rem&quot;>${passo.texto}</span>
+  `;
+  slot.draggable = true;
+  slot.ondragstart = e => { draggedId = passoId; dragSource = 'slot-' + pos; };
+  slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+  slot.ondragleave = () => slot.classList.remove('drag-over');
+  slot.ondrop = e => dropSlot(e, pos);
+
+  slotContents[pos] = passoId;
+  atualizarProgresso(slotContents.filter(s=>s!==null).length, passos.length);
+}
+
+function limparSlot(pos, total) {
+  const slot = document.getElementById('slot-' + pos);
+  slot.className = 'slot-resposta';
+  slot.draggable = false;
+  slot.innerHTML = `
+    <span class=&quot;slot-num&quot;>${pos+1}.</span>
+    <span class=&quot;slot-placeholder&quot;>Solte aqui o ${pos+1}º passo...</span>
+  `;
+  slot.ondragstart = null;
+  slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+  slot.ondragleave = () => slot.classList.remove('drag-over');
+  slot.ondrop = e => dropSlot(e, pos);
+  slotContents[pos] = null;
+
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  atualizarProgresso(slotContents.filter(s=>s!==null).length, passos.length);
+}
+
+// ══════════════════════════════════
+// DRAG &amp; DROP
+// ══════════════════════════════════
+function ev(e, isSlot=false) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-ativo');
+}
+
+function dlv(e) { e.currentTarget.classList.remove('drag-ativo','drag-over'); }
+
+function dropZona(e, zona) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-ativo');
+  if (!draggedId &amp;&amp; draggedId !== 0) return;
+
+  if (zona === 'origem') {
+    // Devolver para origem
+    if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const pos = parseInt(dragSource.split('-')[1]);
+      const desafio = getDesafio();
+      const passos = filtrarPassos(desafio.passos);
+      limparSlot(pos, passos.length);
+      if (!document.getElementById('card-' + draggedId)) {
+        const passo = passos.find(p => p.id === draggedId);
+        if (passo) document.getElementById('zonaOrigem').appendChild(criarCard(passo));
+      }
+    }
+    draggedId = null; dragSource = null;
+  }
+}
+
+function dropSlot(e, pos) {
+  e.preventDefault(); e.stopPropagation();
+  const slot = document.getElementById('slot-' + pos);
+  slot.classList.remove('drag-over');
+  if (!draggedId &amp;&amp; draggedId !== 0) return;
+
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+  const anteriorNeste = slotContents[pos];
+
+  if (dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+    const sourcePos = parseInt(dragSource.split('-')[1]);
+    if (anteriorNeste !== null) {
+      preencherSlot(sourcePos, anteriorNeste);
+    } else {
+      limparSlot(sourcePos, passos.length);
+    }
+  } else {
+    // Vem da origem
+    const el = document.getElementById('card-' + draggedId);
+    if (el) el.remove();
+    if (anteriorNeste !== null) {
+      const p = passos.find(pp => pp.id === anteriorNeste);
+      if (p) document.getElementById('zonaOrigem').appendChild(criarCard(p));
+    }
+  }
+
+  preencherSlot(pos, draggedId);
+  draggedId = null; dragSource = null;
+}
+
+// ══════════════════════════════════
+// TOUCH DRAG (mobile)
+// ══════════════════════════════════
+let touchData = { el:null, clone:null, offsetX:0, offsetY:0, origParent:null };
+
+function touchStart(e) {
+  const card = e.currentTarget;
+  const t = e.touches[0];
+  const rect = card.getBoundingClientRect();
+
+  touchData.el = card;
+  touchData.offsetX = t.clientX - rect.left;
+  touchData.offsetY = t.clientY - rect.top;
+
+  // Clone flutuante
+  const clone = card.cloneNode(true);
+  clone.style.cssText = `
+    position:fixed; z-index:9999; opacity:.85; pointer-events:none;
+    width:${rect.width}px; left:${t.clientX - touchData.offsetX}px;
+    top:${t.clientY - touchData.offsetY}px;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+    transition:none;
+  `;
+  document.body.appendChild(clone);
+  touchData.clone = clone;
+  card.style.opacity = '.3';
+
+  // Descobrir o id
+  const id = parseInt(card.id.replace('card-',''));
+  if (!isNaN(id)) {
+    draggedId = id;
+    dragSource = 'origem';
+  } else {
+    // Vem de um slot
+    const slotEl = card.closest('.slot-resposta');
+    if (slotEl) {
+      const pos = parseInt(slotEl.id.replace('slot-',''));
+      draggedId = slotContents[pos];
+      dragSource = 'slot-' + pos;
+    }
+  }
+}
+
+function touchMove(e) {
+  e.preventDefault();
+  if (!touchData.clone) return;
+  const t = e.touches[0];
+  touchData.clone.style.left = (t.clientX - touchData.offsetX) + 'px';
+  touchData.clone.style.top = (t.clientY - touchData.offsetY) + 'px';
+}
+
+function touchEnd(e) {
+  if (!touchData.clone) return;
+  touchData.clone.remove();
+  touchData.clone = null;
+  if (touchData.el) touchData.el.style.opacity = '';
+
+  const t = e.changedTouches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+
+  // Encontrar slot alvo
+  const slot = el ? el.closest('.slot-resposta') : null;
+  if (slot) {
+    const pos = parseInt(slot.id.replace('slot-',''));
+    if (!isNaN(pos)) {
+      const fakeEv = { preventDefault:()=>{}, stopPropagation:()=>{}, currentTarget:slot };
+      dropSlot(fakeEv, pos);
+    }
+  } else {
+    const zona = el ? el.closest('.zona-bagunca') : null;
+    if (zona &amp;&amp; dragSource &amp;&amp; dragSource.startsWith('slot-')) {
+      const pos = parseInt(dragSource.split('-')[1]);
+      const desafio = getDesafio();
+      const passos = filtrarPassos(desafio.passos);
+      const pid = slotContents[pos];
+      limparSlot(pos, passos.length);
+      if (pid !== null) {
+        const p = passos.find(pp => pp.id === pid);
+        if (p) document.getElementById('zonaOrigem').appendChild(criarCard(p));
+      }
+    }
+  }
+
+  draggedId = null; dragSource = null; touchData.el = null;
+}
+
+// ══════════════════════════════════
+// VERIFICAR
+// ══════════════════════════════════
+function verificar() {
+  const desafio = getDesafio();
+  const passos = filtrarPassos(desafio.passos);
+
+  if (slotContents.some(s => s === null)) {
+    mostrarFeedbackFloat('⚠️ Coloque todos os passos primeiro!', '#F39C12');
+    return;
+  }
+
+  let acertos = 0;
+  slotContents.forEach((id, pos) => {
+    const slot = document.getElementById('slot-' + pos);
+    const passo = passos.find(p => p.id === id);
+    if (passo &amp;&amp; passo.ordemCorreta === pos) {
+      acertos++;
+      slot.classList.remove('errado');
+      slot.classList.add('correto');
+    } else {
+      slot.classList.remove('correto');
+      slot.classList.add('errado');
+    }
+  });
+
+  if (acertos === passos.length) {
+    // Calcular pontos: base + bônus de tempo
+    let ganhou = 30;
+    if (modo === 'dificil') {
+      const bonus = Math.max(0, 60 - cronSegundos) * 2;
+      ganhou = 30 + bonus;
+      totalSegundosGasto += cronSegundos;
+      pararCron();
+    }
+
+    pontos += ganhou;
+    document.getElementById('pontosNum').textContent = pontos;
+    document.getElementById('pontosNum').classList.add('bump');
+    setTimeout(() => document.getElementById('pontosNum').classList.remove('bump'), 400);
+
+    tocarSom(true);
+    mostrarFeedbackFloat('🎉 Perfeito!', '#25D366');
+    lancarConfete();
+
+    const msgDiv = document.getElementById('resultadoMsg');
+    msgDiv.className = 'resultado-msg acerto';
+    msgDiv.innerHTML = `✅ <strong>Perfeito! ${ganhou} pontos!</strong>${modo==='dificil' ? ` (bônus de tempo incluído)` : ''}<br>
+      ${rodada < TOTAL_RODADAS-1 ? `<button onclick=&quot;avancarRodada()&quot; style=&quot;margin-top:10px;padding:8px 22px;background:var(--wa);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>Próximo Desafio →</button>` : `<button onclick=&quot;mostrarFinal()&quot; style=&quot;margin-top:10px;padding:8px 22px;background:var(--wa);border:none;border-radius:20px;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;&quot;>🏆 Ver Resultado</button>`}
+    `;
+  } else {
+    tocarSom(false);
+    mostrarFeedbackFloat(`🤔 ${acertos} de ${passos.length} corretos`, '#E74C3C');
+    const msgDiv = document.getElementById('resultadoMsg');
+    msgDiv.className = 'resultado-msg parcial';
+    msgDiv.innerHTML = `⚠️ <strong>${acertos} de ${passos.length} passos corretos.</strong> Os itens em vermelho estão na posição errada. Tente de novo!`;
+  }
+}
+
+function avancarRodada() {
+  rodada++;
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  carregarRodada();
+}
+
+function reiniciarRodada() {
+  document.getElementById('resultadoMsg').className = 'resultado-msg';
+  pararCron();
+  carregarRodada();
+}
+
+// ══════════════════════════════════
+// FINAL
+// ══════════════════════════════════
+function mostrarFinal() {
+  pararCron();
+  document.getElementById('jogoDiv').style.display = 'none';
+  const final = document.getElementById('telaFinal');
+  final.style.display = 'block';
+
+  document.getElementById('ptsFinal').textContent = pontos;
+  const max = TOTAL_RODADAS * (modo === 'dificil' ? 150 : 30);
+  const pct = pontos / max;
+
+  let emoji = '🥉', titulo = 'Continue praticando!', sub = 'Você completou os desafios!';
+  if (pct === 1) { emoji='🏆'; titulo='Perfeito!'; sub='Pontuação máxima! Você domina o WhatsApp!'; }
+  else if (pct >= .7) { emoji='🥇'; titulo='Muito bem!'; sub='Você sabe enviar mensagens de forma eficiente!'; }
+  else if (pct >= .4) { emoji='🥈'; titulo='Bom trabalho!'; sub='Com mais prática você vai arrasar!'; }
+
+  document.getElementById('emojiFinal').textContent = emoji;
+  document.getElementById('h2Final').textContent = titulo;
+  document.getElementById('subFinal').textContent = sub;
+
+  if (modo === 'dificil' &amp;&amp; totalSegundosGasto > 0) {
+    document.getElementById('tempoFinal').textContent = `⏱ Tempo total: ${totalSegundosGasto}s`;
+  } else {
+    document.getElementById('tempoFinal').textContent = '';
+  }
+
+  tocarSom(true);
+}
+
+// ══════════════════════════════════
+// CRONÔMETRO
+// ══════════════════════════════════
+function iniciarCron() {
+  pararCron();
+  cronSegundos = 0;
+  cronAtivo = true;
+  const el = document.getElementById('cronNum');
+  el.className = 'cron-num';
+  el.textContent = '0';
+
+  cronTimer = setInterval(() => {
+    cronSegundos++;
+    el.textContent = cronSegundos;
+    if (cronSegundos >= 45) {
+      el.className = 'cron-num urgente';
+    }
+  }, 1000);
+}
+
+function pararCron() {
+  if (cronTimer) { clearInterval(cronTimer); cronTimer = null; }
+  cronAtivo = false;
+}
+
+// ══════════════════════════════════
+// PROGRESSO
+// ══════════════════════════════════
+function atualizarProgresso(qtd, total) {
+  const pct = total ? (qtd/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `${qtd} de ${total}`;
+}
+
+// ══════════════════════════════════
+// SOM &amp; CONFETE
+// ══════════════════════════════════
+function tocarSom(ok) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ok) {
+      [523,659,784,1047].forEach((f,i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = f; o.type = 'sine';
+        const t = ctx.currentTime + i*.12;
+        g.gain.setValueAtTime(.28, t);
+        g.gain.exponentialRampToValueAtTime(.001, t+.3);
+        o.start(t); o.stop(t+.35);
+      });
+    } else {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 200; o.type = 'sawtooth';
+      g.gain.setValueAtTime(.18, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+.4);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+.4);
+    }
+  } catch(e){}
+}
+
+function lancarConfete() {
+  const cores = ['#25D366','#128C7E','#F1C40F','#3498DB','#9B59B6','#FF6B35'];
+  for (let i = 0; i < 55; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.cssText = `
+      left:${Math.random()*100}vw; top:-20px;
+      background:${cores[Math.floor(Math.random()*cores.length)]};
+      transform:rotate(${Math.random()*360}deg);
+      animation:cadeConf ${1.2+Math.random()*1.5}s ease forwards;
+      animation-delay:${Math.random()*.4}s;
+    `;
+    document.body.appendChild(el);
+  }
+  const s = document.createElement('style');
+  s.textContent = `@keyframes cadeConf{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(80vh) rotate(720deg)}}`;
+  document.head.appendChild(s);
+  setTimeout(() => document.querySelectorAll('.conf').forEach(e=>e.remove()), 3000);
+}
+
+function mostrarFeedbackFloat(msg, cor) {
+  const fb = document.getElementById('feedbackFloat');
+  fb.textContent = msg;
+  fb.style.background = cor;
+  fb.style.boxShadow = `0 4px 30px ${cor}55`;
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2300);
+}
+
+// Iniciar
+iniciarJogo();
+
+</script>
+</body>
+</html>" 
+              frameborder="0" 
+              id="iframe-jogo4"
+              style="width:100%;height:100%;border:none;"
+              allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  function abrirJogo(id) {
+    // Esconder todos
+    document.querySelectorAll('.game-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    // Mostrar selecionado
+    document.getElementById('panel-' + id).style.display = 'block';
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+</script>
+</body>
+</html>
